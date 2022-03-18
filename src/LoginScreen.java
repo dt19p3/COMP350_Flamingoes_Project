@@ -25,7 +25,7 @@ public class LoginScreen extends Screen {
             currentUser.login(new Profile("Guest",""));
             return new HomeScreen(in,currentUser);        }
         else {
-            return null;
+            return new ExitScreen(in,this);
         }
     }
 

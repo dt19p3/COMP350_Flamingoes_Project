@@ -10,13 +10,14 @@ public class MySchedulesScreen extends Screen {
     @Override
     public Screen input() {
         String inputWord = in.next();
-        String scheduleName = in.next();
         if(inputWord.equalsIgnoreCase("Add")){
+            String scheduleName = in.next();
             //TODO add to schedule with name scheduleName
             Schedule scheduleWithThatName = new Schedule();
             return new CreateScheduleScreen(in,scheduleWithThatName,currentUser);
         }
         else if(inputWord.equalsIgnoreCase("Delete")){
+            String scheduleName = in.next();
             //TODO delete schedule with name scheduleName
             return new MySchedulesScreen(in,currentUser);
         }
@@ -24,7 +25,7 @@ public class MySchedulesScreen extends Screen {
             return new HomeScreen(in,currentUser);
         }
         else {
-            return null;
+            return new ExitScreen(in,this);
         }
     }
 

@@ -24,7 +24,8 @@ public class HomeScreen extends Screen {
             return new ViewProfileScreen(in,currentUser);
         }
         else {
-            return null;
+            return new ExitScreen(in,this);
+
         }
     }
 

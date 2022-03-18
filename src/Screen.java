@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 public abstract class Screen {
     public String name;
-    private String[] options;
+    public String[] options;
     public Scanner in;
     public Screen(String name, String[] options, Scanner scnr){
         this.name = name;

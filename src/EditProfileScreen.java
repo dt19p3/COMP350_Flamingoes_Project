@@ -11,12 +11,13 @@ public class EditProfileScreen extends Screen {
     @Override
     public Screen input() {
         String inputWord = in.next();
-        String nextWord = in.next();
         if(inputWord.equalsIgnoreCase("major")){
+            String nextWord = in.next();
             //TODO Change user's profile major to nextWord
             return new EditProfileScreen(in,currentUser);
         }
         else if(inputWord.equalsIgnoreCase("year")){
+            String nextWord = in.next();
             //TODO Change user's profile year to nextWord
             return new EditProfileScreen(in,currentUser);
         }
@@ -24,7 +25,7 @@ public class EditProfileScreen extends Screen {
             return new HomeScreen(in,currentUser);
         }
         else {
-            return null;
+            return new ExitScreen(in,this);
         }
     }
 

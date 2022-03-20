@@ -55,7 +55,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/json-20211205.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/json-20211205.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -64,7 +64,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/json-simple-1.1.1.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/json-simple-1.1.1.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
@@ -73,7 +73,7 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/org.json-1.0.0.v201011060100.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/org.json-1.0.0.v201011060100.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />

@@ -91,6 +91,7 @@ public class Search {
         }
 
         int nextInput = 0;
+        boolean matchesFound = false;
 
         //endregion
 
@@ -109,6 +110,10 @@ public class Search {
                 //If the codes don't match, remove that row
                 if(!(courseCode.getStringCellValue().contains(code))) {
                     it.remove();
+                }
+                //We need to note that matches were found, if not we need to report that the search found nothing
+                else if (!matchesFound) {
+                    matchesFound = true;
                 }
             }
         }
@@ -142,6 +147,9 @@ public class Search {
                 //Remove the class from consideration if the time is NULL
                 else {
                     it.remove();
+                    if (!matchesFound) {
+                        matchesFound = true;
+                    }
                 }
             }
         }
@@ -162,6 +170,9 @@ public class Search {
                 if(!meetDays.getStringCellValue().contains(meetDays_in)) {
                     it.remove();
                 }
+                else if (!matchesFound) {
+                    matchesFound = true;
+                }
             }
         }
 
@@ -179,6 +190,9 @@ public class Search {
                 if(!name.getStringCellValue().contains(name_in)) {
                     it.remove();
                 }
+                else if (!matchesFound) {
+                    matchesFound = true;
+                }
             }
         }
 
@@ -186,6 +200,13 @@ public class Search {
 
         //region String building
 
+        //First, check if their search yielded any results
+        if(!matchesFound) {
+            return "No matches found";
+        }
+
+        int optionNum = 1;
+        formatter.format(" #  Course Code      Course Name          Meets        Location   E/C\n");
         for(Row row : matchingRows) {
             String code = row.getCell(COL_CODE).getStringCellValue();
             String title = row.getCell(COL_SHORT_TITLE).getStringCellValue();
@@ -207,8 +228,9 @@ public class Search {
             int enrollment = (int)row.getCell(COL_ENROLLMENT).getNumericCellValue();
             int capacity = (int)row.getCell(COL_CAPACITY).getNumericCellValue();
 
-            formatter.format("%s %18s %3s %5s %s %5s %5s %4s %d%s%d\n", code, title, days, start, "-", end,
+            formatter.format("[%d] %11s %18s %4s %5s %s %5s %5s %4s %d%s%d\n", optionNum, code, title, days, start, "-", end,
                     building, room, enrollment, "/", capacity);
+            optionNum++;
         }
 
         //endregion

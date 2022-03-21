@@ -143,13 +143,13 @@ public class Search {
                     if(start_in.isAfter(start) || end_in.isBefore(finish)) {
                         it.remove();
                     }
+                    else if(!matchesFound){
+                        matchesFound = true;
+                    }
                 }
                 //Remove the class from consideration if the time is NULL
                 else {
                     it.remove();
-                    if (!matchesFound) {
-                        matchesFound = true;
-                    }
                 }
             }
         }

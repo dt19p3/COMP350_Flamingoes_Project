@@ -16,7 +16,7 @@ public class CreateScheduleScreen extends Screen {
         if(inputWord.equalsIgnoreCase("Complete")){
             return new MySchedulesScreen(in,currentUser);
         } else if(inputWord.equalsIgnoreCase("Add")) {
-            return new AddCourseScreen(in, currentSchedule, new ArrayList<>(), currentUser);
+            return new AddCourseScreen(in, currentSchedule, new ArrayList<Course>(), currentUser);
         }
         else if(inputWord.equalsIgnoreCase("home")){
                 return new HomeScreen(in,currentUser);

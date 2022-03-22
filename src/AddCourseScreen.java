@@ -23,7 +23,8 @@ public class AddCourseScreen extends Screen {
         }
         else if(inputWord.equalsIgnoreCase("add")){
             //TODO fetch visible course based on input
-            return new RegisterScreen(in);
+            //TODO add course to currentSchedule
+            return new CreateScheduleScreen(in,currentSchedule,currentUser);
         }
         else if(inputLine.trim().equalsIgnoreCase("filter")){
             //TODO searching juju

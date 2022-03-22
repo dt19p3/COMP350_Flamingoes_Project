@@ -1,10 +1,10 @@
-package Searching;
-
 //region Imports
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.text.ParseException;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Formatter;
@@ -58,9 +58,9 @@ public class Search {
     /**
      * Gets results of a search of GCC courses based on search parameters provided by user
      * @param searchParams Query specified by user
-     * @return String displaying search results
+     * @return List of courses found by search
      */
-    public String getResults(SearchParameter searchParams) {
+    public ArrayList<Course> getResults(SearchParameter searchParams) {
 
         //region __init__
 
@@ -76,9 +76,8 @@ public class Search {
         final int COL_CAPACITY = 9;
 
         SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm");
-        StringBuilder value = new StringBuilder();
-        Formatter formatter = new Formatter(value);
         String input = searchParams.getValue();
+        ArrayList<Course> results = new ArrayList<>();
 
         boolean skipHeader = true;
         ArrayList<Row> matchingRows = new ArrayList<>();
@@ -120,27 +119,30 @@ public class Search {
 
         //endregion
 
-        //region Next, filter by time
+        //region Next, filter by start time
 
-        if(searchParams.getFlags().contains(SearchParameter.Flag.TIME)) {
+        if(searchParams.getFlags().contains(SearchParameter.Flag.START_TIME)) {
 
-            //Assumes start time & end time are new line delineated, in 24hr format
-            //TODO: Ask - will they always enter start & finish time or can they enter just start or just finish
-            LocalTime start_in = LocalTime.parse(input.split("\n")[nextInput]);
+            //Assumes start time is new line delineated, in 24hr format
+            String start_in_str = input.split("\n")[nextInput];
             nextInput++;
-            LocalTime end_in = LocalTime.parse(input.split("\n")[nextInput]);
-            nextInput++;
+
+            //Check if the user entered valid times in HH:mm format
+            //If not, return an empty ArrayList since that search would yield 0 results
+            if(!isValidDate(start_in_str)) {
+                return new ArrayList<>();
+            }
+
+            LocalTime start_in = LocalTime.parse(start_in_str);
 
             for (Iterator<Row> it = matchingRows.iterator(); it.hasNext(); ) {
                 Row row = it.next();
                 Cell startTime = row.getCell(COL_START);
-                Cell endTime = row.getCell(COL_END);
 
-                if(startTime.getCellTypeEnum().equals(CellType.NUMERIC) && endTime.getCellTypeEnum().equals(CellType.NUMERIC)) {
+                if(startTime.getCellTypeEnum().equals(CellType.NUMERIC)) {
                     LocalTime start = LocalTime.parse(formatTime.format(startTime.getDateCellValue()));
-                    LocalTime finish = LocalTime.parse(formatTime.format(endTime.getDateCellValue()));
 
-                    if(start_in.isAfter(start) || end_in.isBefore(finish)) {
+                    if(start_in.isAfter(start)) {
                         it.remove();
                     }
                     else if(!matchesFound){
@@ -152,6 +154,45 @@ public class Search {
                     it.remove();
                 }
             }
+        }
+
+        //endregion
+
+        //region Next, filter by end time
+
+        if(searchParams.getFlags().contains(SearchParameter.Flag.END_TIME)) {
+
+            String end_in_str = input.split("\n")[nextInput];
+            nextInput++;
+
+            //Check if the user entered valid times in HH:mm format
+            //If not, return an empty ArrayList since that search would yield 0 results
+            if(!isValidDate(end_in_str)) {
+                return new ArrayList<>();
+            }
+
+            LocalTime end_in = LocalTime.parse(end_in_str);
+
+            for (Iterator<Row> it = matchingRows.iterator(); it.hasNext(); ) {
+                Row row = it.next();
+                Cell endTime = row.getCell(COL_END);
+
+                if(endTime.getCellTypeEnum().equals(CellType.NUMERIC)) {
+                    LocalTime end = LocalTime.parse(formatTime.format(endTime.getDateCellValue()));
+
+                    if(end_in.isBefore(end)) {
+                        it.remove();
+                    }
+                    else if(!matchesFound){
+                        matchesFound = true;
+                    }
+                }
+                //Remove the class from consideration if the time is NULL
+                else {
+                    it.remove();
+                }
+            }
+
         }
 
         //endregion
@@ -198,24 +239,18 @@ public class Search {
 
         //endregion
 
-        //region String building
+        //region Returns
 
-        //First, check if their search yielded any results
-        if(!matchesFound) {
-            return "No matches found";
-        }
-
-        int optionNum = 1;
-        formatter.format(" #  Course Code      Course Name          Meets        Location   E/C\n");
         for(Row row : matchingRows) {
             String code = row.getCell(COL_CODE).getStringCellValue();
-            String title = row.getCell(COL_SHORT_TITLE).getStringCellValue();
-            String start = "N/A";
+            String shortTitle = row.getCell(COL_SHORT_TITLE).getStringCellValue();
+            String longTitle = row.getCell(COL_TITLE).getStringCellValue();
+            LocalTime start = null;
             if(row.getCell(COL_START).getCellTypeEnum().equals(CellType.NUMERIC))
-                start = formatTime.format(row.getCell(COL_START).getDateCellValue());
-            String end = "N/A";
+                start = LocalTime.parse(formatTime.format(row.getCell(COL_START).getDateCellValue()));
+            LocalTime end = null;
             if(row.getCell(COL_END).getCellTypeEnum().equals(CellType.NUMERIC))
-                end = formatTime.format(row.getCell(COL_END).getDateCellValue());
+                end = LocalTime.parse(formatTime.format(row.getCell(COL_END).getDateCellValue()));
             String days = row.getCell(COL_DAYS).getStringCellValue();
             String building = row.getCell(COL_BUILDING).getStringCellValue();
             if(building.equals("NULL")) {
@@ -228,22 +263,36 @@ public class Search {
             int enrollment = (int)row.getCell(COL_ENROLLMENT).getNumericCellValue();
             int capacity = (int)row.getCell(COL_CAPACITY).getNumericCellValue();
 
-            formatter.format("[%d] %11s %18s %4s %5s %s %5s %5s %4s %d%s%d\n", optionNum, code, title, days, start, "-", end,
-                    building, room, enrollment, "/", capacity);
-            optionNum++;
+            results.add(new Course(code, shortTitle, longTitle, start, end, days, building, room, enrollment, capacity));
         }
 
-        //endregion
+        return results;
 
-        return value.toString();
+        //endregion
+    }
+
+    /**
+     * Checks if the supplied string is a valid date
+     * @param inDate The date to be checked
+     * @return True if valid date, otherwise false
+     */
+    private static boolean isValidDate(String inDate) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        dateFormat.setLenient(false);
+        try {
+            dateFormat.parse(inDate.trim());
+        } catch (ParseException pe) {
+            return false;
+        }
+        return true;
     }
 
     //endregion
 
     public static void main(String[] args) {
         Search search = new Search();
-        String input = "COMP";
-        SearchParameter param = new SearchParameter(true, false, false, false, input);
-        System.out.println(search.getResults(param));
+        String input = "COMP\n12:00";
+        SearchParameter param = new SearchParameter(true, false, true, false, false, input);
+        for(Course course : search.getResults(param)) System.out.println(course);
     }
 }

@@ -26,13 +26,87 @@ public class AddCourseScreen extends Screen {
             //TODO add course to currentSchedule
             return new CreateScheduleScreen(in,currentSchedule,currentUser);
         }
+
+        //region Filter
+
         else if(inputLine.trim().equalsIgnoreCase("filter")){
-            //TODO searching juju
+
+            //region __init__
+
+            Search search = new Search();
+            String input = "";
+            String searchString = "";
+            boolean byCode = false;
+            boolean byEndTime = false;
+            boolean byStartTime = false;
+            boolean byDate = false;
+            boolean byName = false;
+
+            //endregion
+
+            //region Get Input
+
+            System.out.println("For each filter option, enter what you would like to search by, or type N.");
+            System.out.println("Course code: ");
+            input = in.nextLine();
+            if(!input.trim().equalsIgnoreCase("N")) {
+                searchString += input + "\n";
+                byCode = true;
+            }
+            System.out.println("Start time: ");
+            input = in.nextLine();
+            if(!input.trim().equalsIgnoreCase("N")) {
+                searchString += input + "\n";
+                byStartTime = true;
+            }
+            System.out.println("End time: ");
+            input = in.nextLine();
+            if(!input.trim().equalsIgnoreCase("N")) {
+                searchString += input + "\n";
+                byEndTime = true;
+            }
+            System.out.println("Meets: ");
+            input = in.nextLine();
+            if(!input.trim().equalsIgnoreCase("N")) {
+                searchString += input + "\n";
+                byDate = true;
+            }
+            System.out.println("Course name: ");
+            input = in.nextLine();
+            if(!input.trim().equalsIgnoreCase("N")) {
+                searchString += input + "\n";
+                byName = true;
+            }
+
+            //endregion
+
+            //region Print Results
+
+            ArrayList<Course> results = search.getResults(new SearchParameter(byCode, byStartTime, byEndTime,
+                    byDate, byName, searchString));
+
+            if(results.isEmpty()) {
+                System.out.println("No results found for the specified query.");
+            }
+            else {
+                System.out.println(" #  Course Code        Course Name        Meets        Location   E/C");
+                int entryNo = 0;
+                for(Course course : results) {
+                    System.out.print("[" + entryNo + "] " + course);
+                    entryNo++;
+                }
+            }
+
+            //endregion
+
             ArrayList<Course> newCourses = new ArrayList<Course>();
-            return new AddCourseScreen(in,currentSchedule,newCourses,currentUser);
+            return new AddCourseScreen(in,currentSchedule,results,currentUser);
         }
+
+        //endregion
+
         else if(inputLine.trim().equalsIgnoreCase("I'm feeling lucky")){
-            //TODO searching juju
+            //TODO implement "I'm feeling lucky" search option
             ArrayList<Course> newCourses = new ArrayList<Course>();
             return new AddCourseScreen(in,currentSchedule,newCourses,currentUser);
         }

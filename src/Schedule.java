@@ -1,5 +1,34 @@
+import java.util.ArrayList;
+
 public class Schedule {
-    public Schedule(){
-        //TODO - just for testing
+
+    ArrayList<Course> courses;
+    String name;
+    public Schedule() {
+        name = "default";
+        courses = new ArrayList<>();
+    }
+    public Schedule(String name){
+        this.name = name;
+        courses = new ArrayList<>();
+    }
+    public void addCourse(Course course) {
+        courses.add(course);
+    }
+
+    public ArrayList<Course> getCourses() {
+        return courses;
+    }
+
+    public void setCourses(ArrayList<Course> courses) {
+        this.courses = courses;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

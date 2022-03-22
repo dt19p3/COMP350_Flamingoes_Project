@@ -20,10 +20,6 @@ public class Course {
     ArrayList<Course> labs;
     ArrayList<Course> prereqs;
 
-
-
-
-
     // this is a constructor that uses all fields in the database
     public Course (String code,  String shortTitle, String longTitle, LocalTime beginTime, LocalTime endTime,
                    String meets, String building, String room, int enrollment, int capacity){

@@ -16,6 +16,27 @@ public class Schedule {
         courses.add(course);
     }
 
+    public void removeCourse(Course course) {
+        if (courses.size() == 0) {
+            System.out.println("No courses to remove");
+        }
+        else {
+            courses.remove(course);
+        }
+    }
+
+    public void listCourses() {
+        if (courses.size() == 0) {
+            System.out.println("No courses in this schedule");
+        }
+        else {
+            //for (int i = 0; i < courses.size(); i++) {
+            for (Course c : courses) {
+                System.out.println(c.getLongTitle());
+            }
+        }
+    }
+
     public ArrayList<Course> getCourses() {
         return courses;
     }

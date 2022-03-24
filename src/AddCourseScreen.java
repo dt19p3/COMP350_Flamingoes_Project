@@ -22,7 +22,11 @@ public class AddCourseScreen extends Screen {
             return new CreateScheduleScreen(in,currentSchedule,currentUser);
         }
         else if(inputWord.equalsIgnoreCase("add")){
-            int index = Integer.valueOf(inputLine.split(" ")[1]);
+            String[] entry = inputLine.split(" ");
+            if(entry.length < 2){
+                return new ExitScreen(in,this);
+            }
+            int index = Integer.valueOf(entry[1]);
             currentSchedule.addCourse(courses.get(index));
             return new CreateScheduleScreen(in,currentSchedule,currentUser);
         }

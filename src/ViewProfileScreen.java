@@ -24,7 +24,8 @@ public class ViewProfileScreen extends Screen {
     public void visualize() {
         //TODO include user info on screen
         System.out.println(String.format(
-                "\t\t\t\t\t.______________________________________________________________________.\n" +
+                "\t\t\t\t\tYear: %-30sMajor: %-29s\n" +
+                        "\t\t\t\t\t.______________________________________________________________________.\n" +
                         "\t\t\t\t\t| Profile                                          from the Flamingoes |\n" +
                         "\t\t\t\t\t|                                                                      |\n" +
                         "\t\t\t\t\t| Enter one of the following:                                          |\n" +
@@ -32,7 +33,8 @@ public class ViewProfileScreen extends Screen {
                         "\t\t\t\t\t|              - Home                                                  |\n" +
                         "\t\t\t\t\t|                                                                      |\n" +
                         "\t\t\t\t\t|                                                                      |\n" +
-                        "\t\t\t\t\t|______________________________________________________________________|\n"));
+                        "\t\t\t\t\t|______________________________________________________________________|\n",
+                currentUser.profile.gradYear,currentUser.profile.major));
     }
 
 }

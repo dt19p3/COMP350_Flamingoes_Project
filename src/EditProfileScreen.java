@@ -13,13 +13,13 @@ public class EditProfileScreen extends Screen {
         String inputWord = in.next();
         if(inputWord.equalsIgnoreCase("major")){
             String nextWord = in.next();
-            //TODO Change user's profile major to nextWord
-            return new EditProfileScreen(in,currentUser);
+            currentUser.profile.major = nextWord;
+            return new ViewProfileScreen(in,currentUser);
         }
         else if(inputWord.equalsIgnoreCase("year")){
             String nextWord = in.next();
-            //TODO Change user's profile year to nextWord
-            return new EditProfileScreen(in,currentUser);
+            currentUser.profile.gradYear = Short.valueOf(nextWord);
+            return new ViewProfileScreen(in,currentUser);
         }
         else if(inputWord.equalsIgnoreCase("home")){
             return new HomeScreen(in,currentUser);

@@ -55,8 +55,9 @@ public class MySchedulesScreen extends Screen {
             return;
         }
         for(Schedule s : currentUser.schedules){
-            System.out.println(s.getName());
+            System.out.println("\n\t\t\t\t\t" + s.getName());
             s.listCourses();
+            System.out.println("\t\t\t\t\t.______________________________________________________________________.\n");
         }
     }
 }

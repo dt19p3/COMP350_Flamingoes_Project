@@ -32,7 +32,7 @@ public class Schedule {
         else {
             //for (int i = 0; i < courses.size(); i++) {
             for (Course c : courses) {
-                System.out.println(c.getLongTitle());
+                System.out.println("\t\t\t\t\t" + c.getLongTitle());
             }
         }
     }

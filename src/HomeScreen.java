@@ -31,7 +31,6 @@ public class HomeScreen extends Screen {
 
     @Override
     public void visualize() {
-        //TODO add user specific info to string
         System.out.println(String.format(
                         "\t\t\t\t\t%72s\n" +
                         "\t\t\t\t\t.______________________________________________________________________.\n" +

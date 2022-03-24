@@ -25,7 +25,7 @@ public class LoginScreen extends Screen {
         else if(inputLine.trim().equalsIgnoreCase("continue as guest")){
             //similar but with guest dummy
             SessionUser currentUser = new SessionUser(true);
-            currentUser.login(new Profile("Guest",""));
+//            currentUser.login(new Profile("Guest",""));
             return new HomeScreen(in,currentUser);        }
         else {
             return new ExitScreen(in,this);

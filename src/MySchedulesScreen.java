@@ -3,7 +3,7 @@ import java.util.Scanner;
 public class MySchedulesScreen extends Screen {
     public SessionUser currentUser;
     public MySchedulesScreen(Scanner scnr,SessionUser s) {
-        super("My Schedules", new String[] {"Add", "Delete","Home"}, scnr);
+        super("My Schedules", new String[] {"Add", "Delete","Home","Calendar"}, scnr);
         this.currentUser = s;
     }
 
@@ -16,16 +16,35 @@ public class MySchedulesScreen extends Screen {
             currentUser.schedules.add(scheduleWithThatName);
             return new CreateScheduleScreen(in,scheduleWithThatName,currentUser);
         }
+        else if(inputWord.equalsIgnoreCase("Calendar")){
+            String scheduleName = in.next();
+            boolean found = false;
+            for(Schedule s : currentUser.schedules){
+                if(s.getName().equals(scheduleName)){
+                    ViewCalendarScheduleScreen.printCalendar(s.getCourses());
+                    found = true;
+                    break;
+                }
+            }
+            if(found) {
+                return new MySchedulesScreen(in, currentUser);
+            } else {
+                return new ExitScreen(in,this);
+            }
+        }
         else if(inputWord.equalsIgnoreCase("Delete")){
             String scheduleName = in.next();
             boolean removed = false;
+            Schedule toRemove = new Schedule("");
             for(Schedule s : currentUser.schedules){
                 if(s.getName().equalsIgnoreCase(scheduleName)) {
-                    currentUser.schedules.remove(s);
                     removed = true;
+                    toRemove = s;
                 }
             }
-            if(!removed){
+            if(removed) {
+                currentUser.schedules.remove(toRemove);
+            } else {
                 System.out.println("No schedule by that name.");
             }
             return new MySchedulesScreen(in,currentUser);
@@ -46,10 +65,10 @@ public class MySchedulesScreen extends Screen {
                         "\t\t\t\t\t| Schedules                                        from the Flamingoes |\n" +
                         "\t\t\t\t\t|                                                                      |\n" +
                         "\t\t\t\t\t| Enter one of the following:                                          |\n" +
-                        "\t\t\t\t\t|              - Add                                                   |\n" +
-                        "\t\t\t\t\t|              - Delete                                                |\n" +
+                        "\t\t\t\t\t|              - Add <name>                                            |\n" +
+                        "\t\t\t\t\t|              - Delete <name>                                         |\n" +
+                        "\t\t\t\t\t|              - Calendar <name>                                       |\n" +
                         "\t\t\t\t\t|              - Home                                                  |\n" +
-                        "\t\t\t\t\t|                                                                      |\n" +
                         "\t\t\t\t\t|______________________________________________________________________|\n"));
         if(currentUser.schedules == null){
             return;

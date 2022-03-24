@@ -20,7 +20,7 @@ public class HomeScreen extends Screen {
         else if(inputLine.trim().equalsIgnoreCase("my schedules")){
             return new MySchedulesScreen(in,currentUser);
         }
-        else if(inputLine.trim().equalsIgnoreCase("my profile")){
+        else if(inputLine.trim().equalsIgnoreCase("my profile") && !currentUser.isGuest){
             return new ViewProfileScreen(in,currentUser);
         }
         else {
@@ -31,16 +31,29 @@ public class HomeScreen extends Screen {
 
     @Override
     public void visualize() {
+        if (!currentUser.isGuest) {
+            System.out.println(String.format(
+                    "\t\t\t\t\t%72s\n" +
+                            "\t\t\t\t\t.______________________________________________________________________.\n" +
+                            "\t\t\t\t\t| Home                                             from the Flamingoes |\n" +
+                            "\t\t\t\t\t|                                                                      |\n" +
+                            "\t\t\t\t\t| Enter one of the following:                                          |\n" +
+                            "\t\t\t\t\t|              - Create schedule <name>                                |\n" +
+                            "\t\t\t\t\t|              - My schedules                                          |\n" +
+                            "\t\t\t\t\t|              - My profile                                            |\n" +
+                            "\t\t\t\t\t|                                                                      |\n" +
+                            "\t\t\t\t\t|______________________________________________________________________|\n", currentUser.profile.username));
+        } else {
         System.out.println(String.format(
-                        "\t\t\t\t\t%72s\n" +
                         "\t\t\t\t\t.______________________________________________________________________.\n" +
                         "\t\t\t\t\t| Home                                             from the Flamingoes |\n" +
                         "\t\t\t\t\t|                                                                      |\n" +
                         "\t\t\t\t\t| Enter one of the following:                                          |\n" +
                         "\t\t\t\t\t|              - Create schedule <name>                                |\n" +
                         "\t\t\t\t\t|              - My schedules                                          |\n" +
-                        "\t\t\t\t\t|              - My profile                                            |\n" +
                         "\t\t\t\t\t|                                                                      |\n" +
-                        "\t\t\t\t\t|______________________________________________________________________|\n",currentUser.profile.username));
+                        "\t\t\t\t\t|                                                                      |\n" +
+                        "\t\t\t\t\t|______________________________________________________________________|\n"));
     }
+}
 }

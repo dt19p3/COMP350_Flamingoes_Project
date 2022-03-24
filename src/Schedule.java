@@ -5,7 +5,7 @@ public class Schedule {
     ArrayList<Course> courses;
     String name;
     public Schedule() {
-        name = "default";
+        name = "Untitled";
         courses = new ArrayList<>();
     }
     public Schedule(String name){
@@ -27,7 +27,7 @@ public class Schedule {
 
     public void listCourses() {
         if (courses.size() == 0) {
-            System.out.println("No courses in this schedule");
+            System.out.println("\t\t\t\t\tNo courses in this schedule");
         }
         else {
             //for (int i = 0; i < courses.size(); i++) {

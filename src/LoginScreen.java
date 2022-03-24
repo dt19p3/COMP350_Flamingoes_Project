@@ -13,7 +13,10 @@ public class LoginScreen extends Screen {
         String inputLine = inputWord + in.nextLine();
         if(inputWord.equalsIgnoreCase("login")){
             SessionUser currentUser = new SessionUser(false);
-            currentUser.login(new Profile(inputLine.split(" ")[0], inputLine.split(" ")[1]));
+            if(inputLine.split(" ").length < 3){
+                return new ExitScreen(in,this);
+            }
+            currentUser.login(new Profile(inputLine.split(" ")[1], inputLine.split(" ")[2]));
             return new HomeScreen(in,currentUser);
         }
         else if(inputWord.equalsIgnoreCase("sign-up")){

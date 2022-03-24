@@ -8,7 +8,7 @@ public class AddCourseScreen extends Screen {
     public SessionUser currentUser;
 
     public AddCourseScreen(Scanner scnr,Schedule currentSchedule,ArrayList<Course> courses,SessionUser currentUser) {
-        super("Add course", new String[] {"Add","View","Filter","I'm feeling lucky","Home"}, scnr);
+        super("Add course", new String[] {"Add","View","Search","I'm feeling lucky","Home"}, scnr);
         this.currentSchedule = currentSchedule;
         this.courses = new ArrayList<>(courses);
         this.currentUser = currentUser;
@@ -22,14 +22,14 @@ public class AddCourseScreen extends Screen {
             return new CreateScheduleScreen(in,currentSchedule,currentUser);
         }
         else if(inputWord.equalsIgnoreCase("add")){
-            //TODO fetch visible course based on input
-            //TODO add course to currentSchedule
+            int index = Integer.valueOf(inputLine.split(" ")[1]);
+            currentSchedule.addCourse(courses.get(index));
             return new CreateScheduleScreen(in,currentSchedule,currentUser);
         }
 
         //region Filter
 
-        else if(inputLine.trim().equalsIgnoreCase("filter")){
+        else if(inputLine.trim().equalsIgnoreCase("search")){
 
             //region __init__
 
@@ -99,7 +99,6 @@ public class AddCourseScreen extends Screen {
 
             //endregion
 
-            ArrayList<Course> newCourses = new ArrayList<Course>();
             return new AddCourseScreen(in,currentSchedule,results,currentUser);
         }
 
@@ -129,6 +128,7 @@ public class AddCourseScreen extends Screen {
                         "\t\t\t\t\t|              - View                                                  |\n" +
                         "\t\t\t\t\t|              - I'm feeling lucky                                     |\n" +
                         "\t\t\t\t\t|              - Home                                                  |\n" +
+                        "\t\t\t\t\t|              - Search                                                |\n" +
                         "\t\t\t\t\t|______________________________________________________________________|\n"));  //TODO
     }
 }

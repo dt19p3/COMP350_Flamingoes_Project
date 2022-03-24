@@ -28,8 +28,8 @@ public class CreateScheduleScreen extends Screen {
 
     @Override
     public void visualize() {
-        //TODO
         System.out.println(String.format(
+                "\t\t\t\t\t%72s\n" +
                 "\t\t\t\t\t.______________________________________________________________________.\n" +
                         "\t\t\t\t\t| Create Schedule                                  from the Flamingoes |\n" +
                         "\t\t\t\t\t|                                                                      |\n" +
@@ -38,5 +38,7 @@ public class CreateScheduleScreen extends Screen {
                         "\t\t\t\t\t|              - Complete                                              |\n" +
                         "\t\t\t\t\t|              - Home                                                  |\n" +
                         "\t\t\t\t\t|                                                                      |\n" +
-                        "\t\t\t\t\t|______________________________________________________________________|\n"));    }
+                        "\t\t\t\t\t|______________________________________________________________________|\n",currentSchedule.getName()));
+        currentSchedule.listCourses();
+    }
 }

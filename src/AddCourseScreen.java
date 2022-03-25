@@ -92,7 +92,7 @@ public class AddCourseScreen extends Screen {
                 System.out.println("No results found for the specified query.");
             } else {
                 System.out.println(" #  Course Code        Course Name        Meets        Location   E/C");
-                int entryNo = 0;
+                int entryNo = 1;
                 for (Course course : results) {
                     System.out.print("[" + entryNo + "] " + course);
                     entryNo++;

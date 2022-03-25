@@ -9,7 +9,7 @@ public class Profile {
         this.username = username;
         this.password = password;
         this.major = "Undeclared";
-        this.gradYear = (short) LocalDate.now().getYear();
+        this.gradYear = (short) (LocalDate.now().getYear() + 4);
         //TODO shouldn't be public or store actual password
     }
 }

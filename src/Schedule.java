@@ -27,12 +27,14 @@ public class Schedule {
 
     public void listCourses() {
         if (courses.size() == 0) {
-            System.out.println("\t\t\t\t\tNo courses in this schedule");
+            System.out.println("\t\t\t\t\t\t-  No courses in this schedule");
         }
         else {
             //for (int i = 0; i < courses.size(); i++) {
+            int i = 1;
             for (Course c : courses) {
-                System.out.println("\t\t\t\t\t" + c.getLongTitle());
+                System.out.println("\t\t\t\t\t\t"+ i + ". " + c.getLongTitle());
+                i++;
             }
         }
     }

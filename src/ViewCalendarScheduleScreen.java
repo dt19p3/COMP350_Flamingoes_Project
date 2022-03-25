@@ -52,9 +52,9 @@ public class ViewCalendarScheduleScreen {
             }
 
             String mLongest = getLongest(monday);
-            String tLongest = "(00:00)" + getLongest(tuesday);
+            String tLongest = "(00:00) " + getLongest(tuesday);
             String wLongest = getLongest(wednesday);
-            String rLongest = "(00:00)" + getLongest(thursday);
+            String rLongest = "(00:00) " + getLongest(thursday);
             String fLongest = getLongest(friday);
 
             if (mLongest.length() < "monday".length()){
@@ -90,7 +90,6 @@ public class ViewCalendarScheduleScreen {
             ArrayList<String> winput = input(wednesday, wLongest);
             ArrayList<String> rinput = input(thursday, rLongest);
             ArrayList<String> finput = input(friday, fLongest);
-
 
             System.out.printf(
                     dashes + "\n"
@@ -144,20 +143,6 @@ public class ViewCalendarScheduleScreen {
                 }
             }
             return longest;
-        }
-
-        public static Course startTime(ArrayList<Course> classesInDay){
-            Course temp = null;
-            int size = classesInDay.size();
-            for(int i = 0; i < size; i++ ){
-                for(int j = i+1; j < size; j++){
-                    if (classesInDay.get(i).beginTime.isBefore(classesInDay.get(j).beginTime)) {
-                        temp = classesInDay.get(i);
-
-                    }
-                }
-            }
-            return temp;
         }
 
         public static String spaces (int n){

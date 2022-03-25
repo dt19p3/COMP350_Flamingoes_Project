@@ -5,24 +5,24 @@ import java.util.Comparator;
 import static java.lang.constant.ConstantDescs.NULL;
 
 public class ViewCalendarScheduleScreen {
-//        public static void main(String[] args) {
-//            Course class1 = new Course("COMP 314 A", "FOUN COMP SCI", "FOUNDATIONS OF COMPUTER SCIENCE", LocalTime.of(8,00,00), LocalTime.of(10,50,00),"MWF", "STEM", "326", 1, 1, 1, "", "", "", null, null);
-//            Course class2 = new Course("MATH 162 D", "CALCULUS II", "CALCULUS II", LocalTime.of(12,00,00), LocalTime.of(12,50,00), "MWF", "HAL", "110", 1, 1, 1, "", "", "", null, null);
-//            Course class3 = new Course("BUSA 211 B", "BUS COMP APP", "BUSINESS COMPUTER APPLICATIONS", LocalTime.of(14,00,00), LocalTime.of(14,50,00), "MWF", "HAL", "213", 1, 1, 1, "", "", "", null, null);
-//            Course class4 = new Course("COMP 314 A", "PARALLEL COMP", "PARALLEL COMPUTING", LocalTime.of(11,00,00), LocalTime.of(12,15,00), "TR", "STEM", "326", 1, 1, 1, "", "", "", null, null);
-//            Course class5 = new Course ("SCIC 203 A", "ATOMS-MOLECULES", "ATOMS, MOLECULES & MATERIAL WORLD", LocalTime.of(13,00,00), LocalTime.of(13,45,00), "TR", "STEM", "51", 1, 1, 1, "", "", "", null, null);
-//            Course class6 = new Course ("SCIC 203 N L", "TEST", "LABORATORY", LocalTime.of(18,30,00), LocalTime.of(16,00,00), "T", "STEM", "255", 1, 1, 1, "", "", "", null, null);
-//
-//            ArrayList<Course> courses = new ArrayList<>();
-//            courses.add(class1);
-//            courses.add(class2);
-//            courses.add(class3);
-//            courses.add(class4);
-//            courses.add(class5);
-//            courses.add(class6);
-//
-//            printCalendar(courses);
-//        }
+        public static void main(String[] args) {
+            Course class1 = new Course("COMP 314 A", "FOUN COMP SCI", "FOUNDATIONS OF COMPUTER SCIENCE", LocalTime.of(8,00,00), LocalTime.of(10,50,00),"MWF", "STEM", "326", 1, 1, 1, "", "", "", null, null);
+            Course class2 = new Course("MATH 162 D", "CALCULUS II", "CALCULUS II", LocalTime.of(12,00,00), LocalTime.of(12,50,00), "MWF", "HAL", "110", 1, 1, 1, "", "", "", null, null);
+            Course class3 = new Course("BUSA 211 B", "BUS COMP APP", "BUSINESS COMPUTER APPLICATIONS", LocalTime.of(14,00,00), LocalTime.of(14,50,00), "MWF", "HAL", "213", 1, 1, 1, "", "", "", null, null);
+            Course class4 = new Course("COMP 314 A", "PARALLEL COMP", "PARALLEL COMPUTING", LocalTime.of(8,00,00), LocalTime.of(12,15,00), "TR", "STEM", "326", 1, 1, 1, "", "", "", null, null);
+            Course class5 = new Course ("SCIC 203 A", "ATOMS-MOLECULES", "ATOMS, MOLECULES & MATERIAL WORLD", LocalTime.of(13,00,00), LocalTime.of(13,45,00), "TR", "STEM", "51", 1, 1, 1, "", "", "", null, null);
+            Course class6 = new Course ("SCIC 203 N L", "TEST", "LABORATORY", LocalTime.of(18,30,00), LocalTime.of(16,00,00), "T", "STEM", "255", 1, 1, 1, "", "", "", null, null);
+
+            ArrayList<Course> courses = new ArrayList<>();
+            courses.add(class1);
+            courses.add(class2);
+            courses.add(class3);
+            courses.add(class4);
+            courses.add(class5);
+            courses.add(class6);
+
+            printCalendar(courses);
+        }
 
         public static void printCalendar(ArrayList<Course> courses) {
             courses.sort(Comparator.comparing((Course a) -> a.beginTime));
@@ -52,9 +52,38 @@ public class ViewCalendarScheduleScreen {
             }
 
             String mLongest = getLongest(monday);
-            String tLongest = "(00:00) " + getLongest(tuesday);
+
+            String tLongest = "";
+            for (int i = 0; i < tuesday.size(); i++){
+                if (tuesday.get(i).beginTime.getHour() == 10 || tuesday.get(i).beginTime.getHour() == 11 || tuesday.get(i).beginTime.getHour() == 14 || tuesday.get(i).beginTime.getHour() == 18) {
+                    if (("(00:00) " + tuesday.get(i).shortTitle).length() > getLongest(tuesday).length()){
+                        tLongest = "(00:00) " + getLongest(tuesday);
+                        break;
+                    } else {
+                        tLongest = getLongest(tuesday);
+                    }
+
+                }else {
+                    tLongest = getLongest(tuesday);
+                }
+            }
+
             String wLongest = getLongest(wednesday);
-            String rLongest = "(00:00) " + getLongest(thursday);
+
+            String rLongest = "";
+            for (int i = 0; i < thursday.size(); i++){
+                if (thursday.get(i).beginTime.getHour() == 10 || thursday.get(i).beginTime.getHour() == 11 || thursday.get(i).beginTime.getHour() == 14 || thursday.get(i).beginTime.getHour() == 18) {
+                    if (("(00:00) " + thursday.get(i).shortTitle).length() > getLongest(thursday).length()){
+                        rLongest = "(00:00) " + getLongest(thursday);
+                        break;
+                    } else {
+                        rLongest = getLongest(thursday);
+                    }
+                }else {
+                    rLongest = getLongest(thursday);
+                }
+            }
+
             String fLongest = getLongest(friday);
 
             if (mLongest.length() < "monday".length()){

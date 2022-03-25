@@ -11,7 +11,7 @@ public class ViewCalendarScheduleScreen {
             Course class3 = new Course("BUSA 211 B", "BUS COMP APP", "BUSINESS COMPUTER APPLICATIONS", LocalTime.of(14,00,00), LocalTime.of(14,50,00), "MWF", "HAL", "213", 1, 1, 1, "", "", "", null, null);
             Course class4 = new Course("COMP 314 A", "PARALLEL COMP", "PARALLEL COMPUTING", LocalTime.of(8,00,00), LocalTime.of(12,15,00), "TR", "STEM", "326", 1, 1, 1, "", "", "", null, null);
             Course class5 = new Course ("SCIC 203 A", "ATOMS-MOLECULES", "ATOMS, MOLECULES & MATERIAL WORLD", LocalTime.of(13,00,00), LocalTime.of(13,45,00), "TR", "STEM", "51", 1, 1, 1, "", "", "", null, null);
-            Course class6 = new Course ("SCIC 203 N L", "TEST", "LABORATORY", LocalTime.of(18,30,00), LocalTime.of(16,00,00), "T", "STEM", "255", 1, 1, 1, "", "", "", null, null);
+            Course class6 = new Course ("SCIC 203 N L", "TEST TEST TEST", "LABORATORY", LocalTime.of(18,30,00), LocalTime.of(16,00,00), "W", "STEM", "255", 1, 1, 1, "", "", "", null, null);
 
             ArrayList<Course> courses = new ArrayList<>();
             courses.add(class1);
@@ -51,7 +51,19 @@ public class ViewCalendarScheduleScreen {
                 }
             }
 
-            String mLongest = getLongest(monday);
+            String mLongest = "";
+            for (int i = 0; i < monday.size(); i++){
+                if (monday.get(i).beginTime.getHour() == 18) {
+                    if (("(00:00) " + monday.get(i).shortTitle).length() > getLongest(monday).length()){
+                        mLongest = "(00:00) " + getLongest(monday);
+                        break;
+                    } else {
+                        mLongest = getLongest(monday);
+                    }
+                }else {
+                    mLongest = getLongest(monday);
+                }
+            }
 
             String tLongest = "";
             for (int i = 0; i < tuesday.size(); i++){
@@ -62,13 +74,24 @@ public class ViewCalendarScheduleScreen {
                     } else {
                         tLongest = getLongest(tuesday);
                     }
-
                 }else {
                     tLongest = getLongest(tuesday);
                 }
             }
 
-            String wLongest = getLongest(wednesday);
+            String wLongest = "";
+            for (int i = 0; i < wednesday.size(); i++){
+                if (wednesday.get(i).beginTime.getHour() == 18) {
+                    if (("(00:00) " + wednesday.get(i).shortTitle).length() > getLongest(wednesday).length()){
+                        wLongest = "(00:00) " + getLongest(wednesday);
+                        break;
+                    } else {
+                        wLongest = getLongest(wednesday);
+                    }
+                }else {
+                    wLongest = getLongest(wednesday);
+                }
+            }
 
             String rLongest = "";
             for (int i = 0; i < thursday.size(); i++){
@@ -84,7 +107,19 @@ public class ViewCalendarScheduleScreen {
                 }
             }
 
-            String fLongest = getLongest(friday);
+            String fLongest = "";
+            for (int i = 0; i < friday.size(); i++){
+                if (friday.get(i).beginTime.getHour() == 18) {
+                    if (("(00:00) " + friday.get(i).shortTitle).length() > getLongest(friday).length()){
+                        fLongest = "(00:00) " + getLongest(friday);
+                        break;
+                    } else {
+                        fLongest = getLongest(friday);
+                    }
+                }else {
+                    fLongest = getLongest(friday);
+                }
+            }
 
             if (mLongest.length() < "monday".length()){
                 mLongest = "monday";

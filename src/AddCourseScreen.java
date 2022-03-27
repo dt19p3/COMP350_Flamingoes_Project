@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class AddCourseScreen extends Screen {
@@ -100,14 +101,37 @@ public class AddCourseScreen extends Screen {
 
             ArrayList<Course> results = search.getResults(query);
 
+            String[] sMeets;
+            for (int i = 0; i < results.size(); i++){
+                String str1 = results.get(i).meets;
+                sMeets = str1.split("");
+                for (int j = 0; j < currentSchedule.getCourses().size(); j++){
+                    for(int k = 0; k < sMeets.length; k++){
+                        if(currentSchedule.getCourses().get(j).meets.contains(sMeets[k])){
+                            if (results.get(i).beginTime.isBefore(currentSchedule.getCourses().get(j).endTime) && results.get(i).beginTime.isAfter(currentSchedule.getCourses().get(j).beginTime) || results.get(i).beginTime == currentSchedule.getCourses().get(j).beginTime ){
+                                results.get(i).setConflicts(true);
+                            }
+                            if (currentSchedule.getCourses().get(j).endTime.isBefore(results.get(i).endTime) && currentSchedule.getCourses().get(j).endTime.isAfter(results.get(i).beginTime) || results.get(i).beginTime == currentSchedule.getCourses().get(j).beginTime ){
+                                results.get(i).setConflicts(true);
+                            }
+                        }
+                    }
+                }
+            }
+
             if (results.isEmpty()) {
                 System.out.println("No results found for the specified query.");
             } else {
                 System.out.println(" #  Course Code        Course Name        Meets        Location   E/C");
                 int entryNo = 1;
                 for (Course course : results) {
-                    System.out.print("[" + entryNo + "] " + course);
-                    entryNo++;
+                    if (!course.getConflicts()){
+                        System.out.print("[" + entryNo + "] " + course);
+                        entryNo++;
+                    }else{
+                        System.out.println("This course can not be added because it has a time conflict with courses that are already in your current schedule:".toUpperCase(Locale.ROOT));
+                        System.out.print(course);
+                    }
                 }
             }
 

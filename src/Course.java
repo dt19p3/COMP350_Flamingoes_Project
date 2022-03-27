@@ -19,13 +19,14 @@ public class Course {
     String semester;
     ArrayList<Course> labs;
     ArrayList<Course> prereqs;
+    boolean conflicts;
 
     // this is a constructor that uses all fields in the database
     public Course (String code,  String shortTitle, String longTitle, LocalTime beginTime, LocalTime endTime,
                    String meets, String building, String room, int enrollment, int capacity){
         this(code,  shortTitle, longTitle,beginTime, endTime, meets, building, room, enrollment, capacity,
                 0, "", "", "", new ArrayList<>(), new ArrayList<>());
-
+        this.conflicts = false;
     }
 
    // this is a constructor that includes the fields in our class diagram, expected to use this when reading
@@ -52,6 +53,13 @@ public class Course {
        this.prereqs = prereqs;
    }
 
+   public boolean getConflicts(){
+        return conflicts;
+    }
+
+    public void setConflicts(boolean conflicts){
+        this.conflicts = conflicts;
+    }
 
     public String getCode() {
         return code;

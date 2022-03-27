@@ -23,6 +23,9 @@ public class HomeScreen extends Screen {
         else if(inputLine.trim().equalsIgnoreCase("my profile") && !currentUser.isGuest){
             return new ViewProfileScreen(in,currentUser);
         }
+        else if(inputLine.trim().equalsIgnoreCase("help")){
+            return new HelpScreen(in,currentUser);
+        }
         else {
             return new ExitScreen(in,this);
 
@@ -41,6 +44,7 @@ public class HomeScreen extends Screen {
                             "\t\t\t\t\t|              - Create schedule <name>                                |\n" +
                             "\t\t\t\t\t|              - My schedules                                          |\n" +
                             "\t\t\t\t\t|              - My profile                                            |\n" +
+                            "\t\t\t\t\t|              - Help                                                  |\n" +
                             "\t\t\t\t\t|                                                                      |\n" +
                             "\t\t\t\t\t|______________________________________________________________________|\n", currentUser.profile.username));
         } else {
@@ -51,7 +55,7 @@ public class HomeScreen extends Screen {
                         "\t\t\t\t\t| Enter one of the following:                                          |\n" +
                         "\t\t\t\t\t|              - Create schedule <name>                                |\n" +
                         "\t\t\t\t\t|              - My schedules                                          |\n" +
-                        "\t\t\t\t\t|                                                                      |\n" +
+                        "\t\t\t\t\t|              - Help                                                  |\n" +
                         "\t\t\t\t\t|                                                                      |\n" +
                         "\t\t\t\t\t|______________________________________________________________________|\n"));
     }

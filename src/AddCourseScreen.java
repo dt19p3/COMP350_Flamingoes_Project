@@ -8,7 +8,7 @@ public class AddCourseScreen extends Screen {
     public SessionUser currentUser;
 
     public AddCourseScreen(Scanner scnr, Schedule currentSchedule, ArrayList<Course> courses, SessionUser currentUser) {
-        super("Add course", new String[]{"Add", "View", "Search", "I'm feeling lucky", "Home"}, scnr);
+        super("Add course", new String[]{"Add", "View", "Search", "I'm feeling lucky", "Home", "See recently added"}, scnr);
         this.currentSchedule = currentSchedule;
         this.courses = new ArrayList<>(courses);
         this.currentUser = currentUser;
@@ -26,7 +26,11 @@ public class AddCourseScreen extends Screen {
                 return new ExitScreen(in, this);
             }
             int index = Integer.valueOf(entry[1]); //TODO error checking
-            currentSchedule.addCourse(courses.get(index));
+            currentSchedule.addCourse(courses.get(index-1));
+            if(currentUser.recentlyAdded.size() > 5) {
+                currentUser.recentlyAdded.remove(currentUser.recentlyAdded.get(currentUser.recentlyAdded.size() - 1));
+            }
+            currentUser.recentlyAdded.add(courses.get(index - 1));
             return new CreateScheduleScreen(in, currentSchedule, currentUser);
         }
 
@@ -124,11 +128,23 @@ public class AddCourseScreen extends Screen {
             Course course = search.feelingLucky();
             newCourses.add(course);
             System.out.println(" #  Course Code        Course Name        Meets        Location   E/C");
-            System.out.print("[0] " + course);
+            System.out.print("[1] " + course);
 
             return new AddCourseScreen(in, currentSchedule, newCourses, currentUser);
         } else if (inputWord.equalsIgnoreCase("home")) {
             return new HomeScreen(in, currentUser);
+        } else if(inputLine.trim().equalsIgnoreCase("See recently added")){
+            if (currentUser.recentlyAdded.isEmpty()) {
+                System.out.println("No courses were added recently.");
+            } else {
+                System.out.println(" #  Course Code        Course Name        Meets        Location   E/C");
+                int entryNo = 1;
+                for (Course course : currentUser.recentlyAdded) {
+                    System.out.print("[" + entryNo + "] " + course);
+                    entryNo++;
+                }
+            }
+            return new AddCourseScreen(in, currentSchedule, currentUser.recentlyAdded, currentUser);
         } else {
             return new ExitScreen(in, this);
         }
@@ -148,6 +164,7 @@ public class AddCourseScreen extends Screen {
                             "\t\t\t\t\t|              - I'm feeling lucky                                     |\n" +
                             "\t\t\t\t\t|              - Home                                                  |\n" +
                             "\t\t\t\t\t|              - Search                                                |\n" +
+                            "\t\t\t\t\t|              - See recently added                                    |\n" +
                             "\t\t\t\t\t|______________________________________________________________________|\n",currentSchedule.getName()));
         } else {
             System.out.println(String.format(
@@ -160,7 +177,7 @@ public class AddCourseScreen extends Screen {
                             "\t\t\t\t\t|              - I'm feeling lucky                                     |\n" +
                             "\t\t\t\t\t|              - Home                                                  |\n" +
                             "\t\t\t\t\t|              - Search                                                |\n" +
-                            "\t\t\t\t\t|                                                                      |\n" +
+                            "\t\t\t\t\t|              - See recently added                                    |\n" +
                             "\t\t\t\t\t|______________________________________________________________________|\n",currentSchedule.getName()));
         }
     }

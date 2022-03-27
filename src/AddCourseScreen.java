@@ -48,7 +48,18 @@ public class AddCourseScreen extends Screen {
             //endregion
 
             //region Get Input
-
+//            ArrayList<Course> results;
+//
+//            System.out.println("Feeling Lucky? (Enter 'I', otherwise press enter to perform a normal search.");
+//            input = in.nextLine();
+//            if(input.trim().equalsIgnoreCase("i")) {
+//                results = new ArrayList<>();
+//                Course course = search.feelingLucky();
+//                results.add(course);
+//                System.out.println(" #  Course Code        Course Name        Meets        Location   E/C");
+//                System.out.print("[0] " + course);
+//                return new AddCourseScreen(in, currentSchedule, results, currentUser);
+//            }
             System.out.println("For each filter option, enter what you would like to search by, or type N.");
             System.out.println("Course code: ");
             input = in.nextLine();
@@ -107,8 +118,14 @@ public class AddCourseScreen extends Screen {
         //endregion
 
         else if (inputLine.trim().equalsIgnoreCase("I'm feeling lucky")) {
-            //TODO implement "I'm feeling lucky" search option
-            ArrayList<Course> newCourses = new ArrayList<Course>();
+            Search search = new Search();
+            ArrayList<Course> newCourses = new ArrayList<>();
+
+            Course course = search.feelingLucky();
+            newCourses.add(course);
+            System.out.println(" #  Course Code        Course Name        Meets        Location   E/C");
+            System.out.print("[0] " + course);
+
             return new AddCourseScreen(in, currentSchedule, newCourses, currentUser);
         } else if (inputWord.equalsIgnoreCase("home")) {
             return new HomeScreen(in, currentUser);

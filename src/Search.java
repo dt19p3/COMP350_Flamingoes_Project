@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.Iterator;
 import java.text.SimpleDateFormat;
+import java.util.Random;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -29,6 +30,19 @@ public class Search {
 
     XSSFWorkbook courses = null;
     XSSFSheet sheet = null;
+
+    final int COL_CODE = 0;
+    final int COL_SHORT_TITLE = 1;
+    final int COL_TITLE = 2;
+    final int COL_START = 3;
+    final int COL_END = 4;
+    final int COL_DAYS = 5;
+    final int COL_BUILDING = 6;
+    final int COL_ROOM = 7;
+    final int COL_ENROLLMENT = 8;
+    final int COL_CAPACITY = 9;
+
+    SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm");
 
     //endregion
 
@@ -65,18 +79,6 @@ public class Search {
 
         //region __init__
 
-        final int COL_CODE = 0;
-        final int COL_SHORT_TITLE = 1;
-        final int COL_TITLE = 2;
-        final int COL_START = 3;
-        final int COL_END = 4;
-        final int COL_DAYS = 5;
-        final int COL_BUILDING = 6;
-        final int COL_ROOM = 7;
-        final int COL_ENROLLMENT = 8;
-        final int COL_CAPACITY = 9;
-
-        SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm");
         formatTime.setLenient(false);
         String input = searchParams.getValue();
         ArrayList<Course> results = new ArrayList<>();
@@ -277,13 +279,16 @@ public class Search {
             int enrollment = (int)row.getCell(COL_ENROLLMENT).getNumericCellValue();
             int capacity = (int)row.getCell(COL_CAPACITY).getNumericCellValue();
 
-            results.add(new Course(code, shortTitle, longTitle, start, end, days, building, room, enrollment, capacity));
+            results.add(new Course(code, shortTitle, longTitle, start, end, days, building, room,
+                    enrollment, capacity));
         }
 
         return results;
 
         //endregion
     }
+
+    //region isValidDate()
 
     /**
      * Checks if the supplied string is a valid date
@@ -303,10 +308,51 @@ public class Search {
 
     //endregion
 
+    //endregion
+
+    //region I'm Feeling Lucky
+
+    /**
+     * @return 1 completely random course
+     */
+    public Course feelingLucky() {
+        Random rand = new Random();
+        int randRow = rand.nextInt(1, sheet.getLastRowNum());
+
+        Row row = sheet.getRow(randRow);
+
+        String code = row.getCell(COL_CODE).getStringCellValue();
+        String shortTitle = row.getCell(COL_SHORT_TITLE).getStringCellValue();
+        String longTitle = row.getCell(COL_TITLE).getStringCellValue();
+        LocalTime start = null;
+        if(row.getCell(COL_START).getCellTypeEnum().equals(CellType.NUMERIC))
+            start = LocalTime.parse(formatTime.format(row.getCell(COL_START).getDateCellValue()));
+        LocalTime end = null;
+        if(row.getCell(COL_END).getCellTypeEnum().equals(CellType.NUMERIC))
+            end = LocalTime.parse(formatTime.format(row.getCell(COL_END).getDateCellValue()));
+        String days = row.getCell(COL_DAYS).getStringCellValue();
+        String building = row.getCell(COL_BUILDING).getStringCellValue();
+        if(building.equals("NULL")) {
+            building = "TBD";
+        }
+        String room = "";
+        if(row.getCell(COL_ROOM).toString().contains(".")) {
+            room = row.getCell(COL_ROOM).toString().split("\\.")[0];
+        }
+        int enrollment = (int)row.getCell(COL_ENROLLMENT).getNumericCellValue();
+        int capacity = (int)row.getCell(COL_CAPACITY).getNumericCellValue();
+
+        return new Course(code, shortTitle, longTitle, start, end, days, building, room,
+                enrollment, capacity);
+    }
+
+    //endregion
+
     public static void main(String[] args) {
         Search search = new Search();
         String input = "COMP\n8:00";
-        SearchParameter param = new SearchParameter(true, true, false, false, false, input);
-        for(Course course : search.getResults(param)) System.out.println(course);
+//        SearchParameter param = new SearchParameter(true, true, false, false, false, input);
+//        for(Course course : search.getResults(param)) System.out.println(course);
+        System.out.println(search.feelingLucky());
     }
 }

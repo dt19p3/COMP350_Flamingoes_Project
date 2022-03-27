@@ -295,8 +295,8 @@ public class Main {
         }
     }
 
-    public static String getSchedule(String username, String scheduleName) throws IOException, ParseException {
-        String schedule = "";
+    public static Schedule getSchedule(String username, String scheduleName) throws IOException, ParseException {
+        Schedule schedule = null;
         Object o = new JSONParser().parse(new FileReader("accountSchedules.json"));
         JSONObject users = (JSONObject) o;
 
@@ -307,7 +307,7 @@ public class Main {
             JSONObject checkAcc = (JSONObject) new JSONParser().parse(arr.getJSONObject(i).toString());
             if(checkAcc.containsKey(username)){
                 JSONObject accDet = (JSONObject) checkAcc.get(username);
-                return (String) accDet.get(scheduleName);
+                return (Schedule) accDet.get(scheduleName);
             }
         }
         return schedule;

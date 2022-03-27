@@ -10,6 +10,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Scanner;
 
+@SuppressWarnings("ALL")
 public class Main {
     public static byte[] generateSalt() throws Exception{
         try {
@@ -72,6 +73,8 @@ public class Main {
         }catch(IOException e){
             e.printStackTrace();
         }
+        addUserDetails(username);
+        addInitialSchedules(username);
     }
 
     public static void login(String username, String password) throws Exception {
@@ -100,6 +103,166 @@ public class Main {
         if(!found) System.out.println("No Account Found");
     }
 
+
+
+
+    public static void addUserDetails(String username) throws IOException, ParseException {
+        Object o = new JSONParser().parse(new FileReader("accountDetails.json"));
+        JSONObject users = (JSONObject) o;
+
+        JSONArray original = new JSONArray(users.get("Users").toString());
+
+        JSONObject details = new JSONObject();
+        details.put("Major", "Undeclared");
+        details.put("Graduation Year", "0000");
+
+        JSONObject account = new JSONObject();
+        account.put(username, details);
+
+        original.put(account);
+
+        JSONObject updated = new JSONObject();
+        updated.put("Users", original);
+
+        try{
+            FileWriter file = new FileWriter("accountDetails.json");
+            file.write(updated.toString());
+            file.flush();
+            file.close();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void addInitialSchedules(String username) throws IOException, ParseException{
+        Object o = new JSONParser().parse(new FileReader("accountSchedules.json"));
+        JSONObject users = (JSONObject) o;
+
+        JSONArray original = new JSONArray(users.get("Users").toString());
+
+        JSONObject schedules = new JSONObject();
+        schedules.put(null,null);
+
+        JSONObject account = new JSONObject();
+        account.put(username, schedules);
+
+        original.put(account);
+
+        JSONObject updated = new JSONObject();
+        updated.put("Users", original);
+        try{
+            FileWriter file = new FileWriter("accountSchedules.json");
+            file.write(updated.toString());
+            file.flush();
+            file.close();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static String getGradYear(String username) throws IOException, ParseException {
+        String gradYear = "";
+        Object o = new JSONParser().parse(new FileReader("accountDetails.json"));
+        JSONObject users = (JSONObject) o;
+
+        //copies the users into a JSONArray
+        JSONArray arr = new JSONArray(users.get("Users").toString());
+
+        for(int i = 0; i<arr.length(); i++){
+            JSONObject checkAcc = (JSONObject) new JSONParser().parse(arr.getJSONObject(i).toString());
+            if(checkAcc.containsKey(username)){
+                JSONObject accDet = (JSONObject) checkAcc.get(username);
+                return accDet.get("Graduation Year").toString();
+            }
+        }
+        return gradYear;
+    }
+
+    public static void setGradYear(String username, String gradYear)throws IOException, ParseException{
+        Object o = new JSONParser().parse(new FileReader("accountDetails.json"));
+        JSONObject users = (JSONObject) o;
+
+        //copies the users into a JSONArray
+        JSONArray arr = new JSONArray(users.get("Users").toString());
+        for(int i = 0; i<arr.length(); i++){
+            JSONObject checkAcc = (JSONObject) new JSONParser().parse(arr.getJSONObject(i).toString());
+            if(checkAcc.containsKey(username)){
+                JSONObject accDet = (JSONObject) checkAcc.get(username);
+                accDet.replace("Graduation Year", gradYear);
+
+                JSONObject account = new JSONObject();
+                account.put(username, accDet);
+
+                arr.remove(i);
+                arr.put(account);
+
+                JSONObject updated = new JSONObject();
+                updated.put("Users", arr);
+                try{
+                    FileWriter file = new FileWriter("accountDetails.json");
+                    file.write(updated.toString());
+                    file.flush();
+                    file.close();
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+    }
+
+    public static String getMajor(String username) throws IOException, ParseException {
+        String major = "";
+        Object o = new JSONParser().parse(new FileReader("accountDetails.json"));
+        JSONObject users = (JSONObject) o;
+
+        //copies the users into a JSONArray
+        JSONArray arr = new JSONArray(users.get("Users").toString());
+
+        for(int i = 0; i<arr.length(); i++){
+            JSONObject checkAcc = (JSONObject) new JSONParser().parse(arr.getJSONObject(i).toString());
+            if(checkAcc.containsKey(username)){
+                JSONObject accDet = (JSONObject) checkAcc.get(username);
+                major = accDet.get("Major").toString();
+                break;
+            }
+        }
+        return major;
+    }
+
+    public static void setMajor(String username, String major)throws IOException, ParseException{
+        Object o = new JSONParser().parse(new FileReader("accountDetails.json"));
+        JSONObject users = (JSONObject) o;
+
+        //copies the users into a JSONArray
+        JSONArray arr = new JSONArray(users.get("Users").toString());
+        for(int i = 0; i<arr.length(); i++){
+            JSONObject checkAcc = (JSONObject) new JSONParser().parse(arr.getJSONObject(i).toString());
+            if(checkAcc.containsKey(username)){
+                JSONObject accDet = (JSONObject) checkAcc.get(username);
+                accDet.replace("Major", major);
+
+                JSONObject account = new JSONObject();
+                account.put(username, accDet);
+
+                arr.remove(i);
+                arr.put(account);
+
+                JSONObject updated = new JSONObject();
+                updated.put("Users", arr);
+                try{
+                    FileWriter file = new FileWriter("accountDetails.json");
+                    file.write(updated.toString());
+                    file.flush();
+                    file.close();
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+    }
+
     public static void consoleVersion() throws Exception {
         Scanner scan = new Scanner(System.in);
         boolean done = false;
@@ -115,8 +278,7 @@ public class Main {
                     String username = scan.nextLine();
                     System.out.print("Password: ");
                     String password = scan.nextLine();
-                    String encryptedPassword = encrypt(password, salt);
-                    storeAccount(username, saltString, encryptedPassword);
+                    storeAccount(username, saltString, encrypt(password, salt));
                 }
                 case "LOGIN" -> {
                     System.out.print("Username: ");

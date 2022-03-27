@@ -12,4 +12,6 @@ public class Profile {
         this.gradYear = (short) (LocalDate.now().getYear() + 4);
         //TODO shouldn't be public or store actual password
     }
+
+
 }

@@ -52,46 +52,35 @@ public class AddCourseScreen extends Screen {
             //endregion
 
             //region Get Input
-//            ArrayList<Course> results;
-//
-//            System.out.println("Feeling Lucky? (Enter 'I', otherwise press enter to perform a normal search.");
-//            input = in.nextLine();
-//            if(input.trim().equalsIgnoreCase("i")) {
-//                results = new ArrayList<>();
-//                Course course = search.feelingLucky();
-//                results.add(course);
-//                System.out.println(" #  Course Code        Course Name        Meets        Location   E/C");
-//                System.out.print("[0] " + course);
-//                return new AddCourseScreen(in, currentSchedule, results, currentUser);
-//            }
+
             System.out.println("For each filter option, enter what you would like to search by, or type N.");
             System.out.println("Course code: ");
             input = in.nextLine();
-            if (!input.trim().equalsIgnoreCase("N")) {
+            if (!input.trim().equalsIgnoreCase("N") && !input.isEmpty()) {
                 searchString += input + "\n";
                 byCode = true;
             }
             System.out.println("Start time: ");
             input = in.nextLine();
-            if (!input.trim().equalsIgnoreCase("N")) {
+            if (!input.trim().equalsIgnoreCase("N") && !input.isEmpty()) {
                 searchString += input + "\n";
                 byStartTime = true;
             }
             System.out.println("End time: ");
             input = in.nextLine();
-            if (!input.trim().equalsIgnoreCase("N")) {
+            if (!input.trim().equalsIgnoreCase("N") && !input.isEmpty()) {
                 searchString += input + "\n";
                 byEndTime = true;
             }
             System.out.println("Meets: ");
             input = in.nextLine();
-            if (!input.trim().equalsIgnoreCase("N")) {
+            if (!input.trim().equalsIgnoreCase("N") && !input.isEmpty()) {
                 searchString += input + "\n";
                 byDate = true;
             }
             System.out.println("Course name: ");
             input = in.nextLine();
-            if (!input.trim().equalsIgnoreCase("N")) {
+            if (!input.trim().equalsIgnoreCase("N") && !input.isEmpty()) {
                 searchString += input + "\n";
                 byName = true;
             }
@@ -100,8 +89,16 @@ public class AddCourseScreen extends Screen {
 
             //region Print Results
 
-            ArrayList<Course> results = search.getResults(new SearchParameter(byCode, byStartTime, byEndTime,
-                    byDate, byName, searchString));
+            SearchParameter query = new SearchParameter(byCode, byStartTime, byEndTime,
+                    byDate, byName, searchString);
+
+            //Make sure user actually entered a query
+            if(query.getFlags().isEmpty()) {
+                System.out.println("You must search using at least one filter.");
+                return new AddCourseScreen(in, currentSchedule, new ArrayList<>(), currentUser);
+            }
+
+            ArrayList<Course> results = search.getResults(query);
 
             if (results.isEmpty()) {
                 System.out.println("No results found for the specified query.");

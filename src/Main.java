@@ -114,7 +114,7 @@ public class Main {
 
         JSONObject details = new JSONObject();
         details.put("Major", "Undeclared");
-        details.put("Graduation Year", "0000");
+        details.put("Graduation Year", 0000);
 
         JSONObject account = new JSONObject();
         account.put(username, details);
@@ -160,8 +160,8 @@ public class Main {
         }
     }
 
-    public static String getGradYear(String username) throws IOException, ParseException {
-        String gradYear = "";
+    public static int getGradYear(String username) throws IOException, ParseException {
+        int gradYear = 0;
         Object o = new JSONParser().parse(new FileReader("accountDetails.json"));
         JSONObject users = (JSONObject) o;
 
@@ -172,13 +172,13 @@ public class Main {
             JSONObject checkAcc = (JSONObject) new JSONParser().parse(arr.getJSONObject(i).toString());
             if(checkAcc.containsKey(username)){
                 JSONObject accDet = (JSONObject) checkAcc.get(username);
-                return accDet.get("Graduation Year").toString();
+                return Integer.parseInt(accDet.get("Graduation Year").toString());
             }
         }
         return gradYear;
     }
 
-    public static void setGradYear(String username, String gradYear)throws IOException, ParseException{
+    public static void setGradYear(String username, int gradYear)throws IOException, ParseException{
         Object o = new JSONParser().parse(new FileReader("accountDetails.json"));
         JSONObject users = (JSONObject) o;
 
@@ -263,37 +263,87 @@ public class Main {
         }
     }
 
-    public static void consoleVersion() throws Exception {
-        Scanner scan = new Scanner(System.in);
-        boolean done = false;
+    public static void addSchedule(String username, String scheduleName, Schedule schedule)throws IOException, ParseException{
+        Object o = new JSONParser().parse(new FileReader("accountSchedules.json"));
+        JSONObject users = (JSONObject) o;
 
-        while (!done){
-            System.out.print("Please enter a command: ");
-            String command = scan.nextLine();
-            switch (command) {
-                case "REGISTER" -> {
-                    byte[] salt = generateSalt();
-                    String saltString = Base64.getEncoder().encodeToString(salt);
-                    System.out.print("Username: ");
-                    String username = scan.nextLine();
-                    System.out.print("Password: ");
-                    String password = scan.nextLine();
-                    storeAccount(username, saltString, encrypt(password, salt));
+        //copies the users into a JSONArray
+        JSONArray arr = new JSONArray(users.get("Users").toString());
+        for(int i = 0; i<arr.length(); i++){
+            JSONObject checkAcc = (JSONObject) new JSONParser().parse(arr.getJSONObject(i).toString());
+            if(checkAcc.containsKey(username)){
+                JSONObject accDet = (JSONObject) checkAcc.get(username);
+                accDet.put(scheduleName, schedule);
+
+                JSONObject account = new JSONObject();
+                account.put(username, accDet);
+                arr.remove(i);
+                arr.put(account);
+
+                JSONObject updated = new JSONObject();
+                updated.put("Users", arr);
+                try{
+                    FileWriter file = new FileWriter("accountSchedules.json");
+                    file.write(updated.toString());
+                    file.flush();
+                    file.close();
+                }catch(IOException e){
+                    e.printStackTrace();
                 }
-                case "LOGIN" -> {
-                    System.out.print("Username: ");
-                    String username = scan.nextLine();
-                    System.out.print("Password: ");
-                    String password = scan.nextLine();
-                    login(username, password);
-                }
-                case "EXIT" -> done = true;
-                default -> System.out.println("Not a valid command!");
+                break;
             }
         }
-
-
     }
+
+    public static String getSchedule(String username, String scheduleName) throws IOException, ParseException {
+        String schedule = "";
+        Object o = new JSONParser().parse(new FileReader("accountSchedules.json"));
+        JSONObject users = (JSONObject) o;
+
+        //copies the users into a JSONArray
+        JSONArray arr = new JSONArray(users.get("Users").toString());
+
+        for(int i = 0; i<arr.length(); i++){
+            JSONObject checkAcc = (JSONObject) new JSONParser().parse(arr.getJSONObject(i).toString());
+            if(checkAcc.containsKey(username)){
+                JSONObject accDet = (JSONObject) checkAcc.get(username);
+                return (String) accDet.get(scheduleName);
+            }
+        }
+        return schedule;
+    }
+
+//    public static void consoleVersion() throws Exception {
+//        Scanner scan = new Scanner(System.in);
+//        boolean done = false;
+//
+//        while (!done){
+//            System.out.print("Please enter a command: ");
+//            String command = scan.nextLine();
+//            switch (command) {
+//                case "REGISTER" -> {
+//                    byte[] salt = generateSalt();
+//                    String saltString = Base64.getEncoder().encodeToString(salt);
+//                    System.out.print("Username: ");
+//                    String username = scan.nextLine();
+//                    System.out.print("Password: ");
+//                    String password = scan.nextLine();
+//                    storeAccount(username, saltString, encrypt(password, salt));
+//                }
+//                case "LOGIN" -> {
+//                    System.out.print("Username: ");
+//                    String username = scan.nextLine();
+//                    System.out.print("Password: ");
+//                    String password = scan.nextLine();
+//                    login(username, password);
+//                }
+//                case "EXIT" -> done = true;
+//                default -> System.out.println("Not a valid command!");
+//            }
+//        }
+//
+//
+//    }
 
 //    public static void main(String[] args) throws Exception {
 //        consoleVersion();

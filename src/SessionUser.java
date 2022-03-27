@@ -15,5 +15,7 @@ public class SessionUser {
     public void login(Profile p){
         //TODO make schedules equal to user's saved schedules CHRISTIAN
         this.profile = p;
+
+
     }
 }

@@ -11,7 +11,7 @@ import java.util.Base64;
 import java.util.Scanner;
 
 @SuppressWarnings("ALL")
-public class Main {
+public class Store {
     public static byte[] generateSalt() throws Exception{
         try {
             SecureRandom rand = new SecureRandom();

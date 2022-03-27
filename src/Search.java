@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.Iterator;
@@ -76,6 +77,7 @@ public class Search {
         final int COL_CAPACITY = 9;
 
         SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm");
+        formatTime.setLenient(false);
         String input = searchParams.getValue();
         ArrayList<Course> results = new ArrayList<>();
 
@@ -129,11 +131,18 @@ public class Search {
 
             //Check if the user entered valid times in HH:mm format
             //If not, return an empty ArrayList since that search would yield 0 results
+
             if(!isValidDate(start_in_str)) {
                 return new ArrayList<>();
             }
 
-            LocalTime start_in = LocalTime.parse(start_in_str);
+            LocalTime start_in;
+
+            try {
+                start_in = LocalTime.parse(start_in_str.trim());
+            } catch(DateTimeParseException pe) {
+                return new ArrayList<>();
+            }
 
             for (Iterator<Row> it = matchingRows.iterator(); it.hasNext(); ) {
                 Row row = it.next();
@@ -171,7 +180,12 @@ public class Search {
                 return new ArrayList<>();
             }
 
-            LocalTime end_in = LocalTime.parse(end_in_str);
+            LocalTime end_in;
+            try {
+                end_in = LocalTime.parse(end_in_str.trim());
+            } catch(DateTimeParseException pe) {
+                return new ArrayList<>();
+            }
 
             for (Iterator<Row> it = matchingRows.iterator(); it.hasNext(); ) {
                 Row row = it.next();
@@ -291,8 +305,8 @@ public class Search {
 
     public static void main(String[] args) {
         Search search = new Search();
-        String input = "COMP\n12:00";
-        SearchParameter param = new SearchParameter(true, false, true, false, false, input);
+        String input = "COMP\n8:00";
+        SearchParameter param = new SearchParameter(true, true, false, false, false, input);
         for(Course course : search.getResults(param)) System.out.println(course);
     }
 }

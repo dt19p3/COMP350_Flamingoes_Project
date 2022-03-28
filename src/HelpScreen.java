@@ -22,7 +22,6 @@ public class HelpScreen extends Screen{
 
     @Override
     public void visualize() {
-        //TODO include user info on screen
         System.out.println(String.format(
                         "\t\t\t\t\t.______________________________________________________________________.\n" +
                         "\t\t\t\t\t| Help                                             from the Flamingoes |\n" +

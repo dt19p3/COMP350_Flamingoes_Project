@@ -1,5 +1,7 @@
 import java.util.Scanner;
-
+/**
+ * The exit screen
+ */
 public class ExitScreen extends Screen {
     private Screen lastScreen;
 

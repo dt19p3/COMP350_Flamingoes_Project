@@ -24,7 +24,9 @@ public class SessionUser {
             profile.major = s.getMajor(profile.username);
             this.schedules = s.getSchedules(s.username);
         }
-
+        if(this.schedules == null){
+            this.schedules = new ArrayList<>();
+        }
 
     }
 

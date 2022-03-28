@@ -1,5 +1,7 @@
 import java.util.Scanner;
-
+/**
+ * The register screen
+ */
 public class RegisterScreen extends Screen {
     public RegisterScreen(Scanner scnr) {
         super("Register", new String[] {"Sign-up"}, scnr); //TODO

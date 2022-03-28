@@ -2,6 +2,9 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
 
+/**
+ * The add course screen.
+ */
 public class AddCourseScreen extends Screen {
 
     public Schedule currentSchedule;

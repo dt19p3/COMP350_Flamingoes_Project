@@ -1,5 +1,7 @@
 import java.util.Scanner;
-
+/**
+ * The view-my-schedule screen.
+ */
 public class MySchedulesScreen extends Screen {
     public SessionUser currentUser;
     public MySchedulesScreen(Scanner scnr,SessionUser s) {

@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Scanner;
-
+/**
+ * The create schedule screen
+ */
 public class CreateScheduleScreen extends Screen {
     public Schedule currentSchedule;
     public SessionUser currentUser;

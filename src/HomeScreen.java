@@ -1,5 +1,7 @@
 import java.util.Scanner;
-
+/**
+ * The home screen
+ */
 public class HomeScreen extends Screen {
     private SessionUser currentUser;
     public HomeScreen(Scanner scnr, SessionUser sessionUser) {

@@ -1,5 +1,8 @@
 import java.util.Scanner;
 
+/**
+ * The 'main' console-based application.
+ */
 public class ConsoleApplication {
     public static void main(String[] args){
         run();

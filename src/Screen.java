@@ -1,9 +1,11 @@
 import java.util.Scanner;
-
+/**
+ * The abstract, parent screen class
+ */
 public abstract class Screen {
-    public String name;
-    public String[] options;
-    public Scanner in;
+    public String name; //The name of the Screen
+    public String[] options; //The possible inputs (for testing, GUI extension)
+    public Scanner in; //The console-scanner used
     public Screen(String name, String[] options, Scanner scnr){
         this.name = name;
         this.in = scnr;
@@ -12,8 +14,13 @@ public abstract class Screen {
             this.options[i] = options[i];
         }
     }
-    
+
+    /** Takes in user input and returns next screen.
+     * @return The next Screen
+     */
     public abstract Screen input();
 
+    /** Prints a visualization of the current screen.
+     */
     public abstract void visualize();
 }

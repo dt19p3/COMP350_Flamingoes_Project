@@ -1,6 +1,8 @@
 import java.util.List;
 import java.util.Scanner;
-
+/**
+ * The login screen
+ */
 public class LoginScreen extends Screen {
 
     public LoginScreen(Scanner scnr) {

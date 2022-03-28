@@ -1,5 +1,7 @@
 import java.util.Scanner;
-
+/**
+ * The help screen
+ */
 public class HelpScreen extends Screen{
     public SessionUser currentUser;
     public HelpScreen(Scanner scnr, SessionUser currentUser) {

@@ -1,3 +1,6 @@
+import org.json.simple.parser.ParseException;
+
+import java.io.IOException;
 import java.util.Scanner;
 
 public abstract class Screen {
@@ -13,7 +16,7 @@ public abstract class Screen {
         }
     }
     
-    public abstract Screen input();
+    public abstract Screen input() throws Exception;
 
     public abstract void visualize();
 }

@@ -1,3 +1,6 @@
+import org.json.simple.parser.ParseException;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -8,7 +11,7 @@ public class LoginScreen extends Screen {
     }
 
     @Override
-    public Screen input() {
+    public Screen input() throws Exception {
         String inputWord = in.next();
         String inputLine = inputWord + in.nextLine();
         if(inputWord.equalsIgnoreCase("login")){

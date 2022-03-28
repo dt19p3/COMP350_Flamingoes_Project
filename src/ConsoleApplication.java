@@ -1,10 +1,10 @@
 import java.util.Scanner;
 
 public class ConsoleApplication {
-    public static void main(String[] args){
+    public static void main(String[] args) throws Exception {
         run();
     }
-    public static void run(){
+    public static void run() throws Exception {
         Scanner scnr = new Scanner(System.in);
         Screen curscreen = new LoginScreen(scnr);
         while(curscreen != null){

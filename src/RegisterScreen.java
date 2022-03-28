@@ -1,3 +1,6 @@
+import org.json.simple.parser.ParseException;
+
+import java.io.IOException;
 import java.util.Scanner;
 
 public class RegisterScreen extends Screen {
@@ -6,11 +9,11 @@ public class RegisterScreen extends Screen {
     }
 
     @Override
-    public Screen input() {
+    public Screen input() throws Exception {
         String inputWord = in.next();
         if(inputWord.equalsIgnoreCase("Sign-up")) {
             SessionUser currentUser = new SessionUser(false);
-            currentUser.login(new Profile(in.next(),in.next()));
+            currentUser.register(in.next(),in.next());
             return new HomeScreen(in,currentUser);
         }
         else {

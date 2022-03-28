@@ -20,6 +20,7 @@ public class Course {
     ArrayList<Course> labs;
     ArrayList<Course> prereqs;
     boolean conflicts;
+    Course conflictingCourse;
 
     // this is a constructor that uses all fields in the database
     public Course (String code,  String shortTitle, String longTitle, LocalTime beginTime, LocalTime endTime,
@@ -27,6 +28,7 @@ public class Course {
         this(code,  shortTitle, longTitle,beginTime, endTime, meets, building, room, enrollment, capacity,
                 0, "", "", "", new ArrayList<>(), new ArrayList<>());
         this.conflicts = false;
+        this.conflictingCourse = null;
     }
 
    // this is a constructor that includes the fields in our class diagram, expected to use this when reading
@@ -51,6 +53,14 @@ public class Course {
        this.semester = semester;
        this.labs = labs;
        this.prereqs = prereqs;
+   }
+
+   public Course getConflictingCourse() {
+        return conflictingCourse;
+   }
+
+   public void setConflictingCourse(Course course) {
+        this.conflictingCourse = course;
    }
 
    public boolean getConflicts(){
@@ -193,7 +203,7 @@ public class Course {
     public String toString() {
         StringBuilder value = new StringBuilder();
         Formatter formatter = new Formatter(value);
-        formatter.format("%11s %18s %4s %5s - %5s %5s %4s %d/%d\n", code, shortTitle, meets, beginTime,
+        formatter.format("%11s %18s %4s %5s - %5s %5s %4s %d/%d", code, shortTitle, meets, beginTime,
                 endTime, building, room, enrollment, capacity);
         return value.toString().replace("null", "TBD");
     }

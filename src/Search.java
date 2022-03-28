@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.text.ParseException;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -348,11 +349,59 @@ public class Search {
 
     //endregion
 
+    //region Search by Profile
+
+    /**
+     * Searches for courses based on a given user's profile information
+     * @param user The user searching for courses
+     * @return A list of courses
+     */
+    public ArrayList<Course> searchByProfile(SessionUser user) {
+        short gradYear = user.profile.gradYear;
+
+        //Allow someone whose major is undeclared to still use this feature
+        String major = user.profile.major;
+        if(major.equals("Undeclared")) {
+            major = "";
+        }
+        if(user.isGuest || (gradYear == 0 && major.equals(""))) {
+            return new ArrayList<>();
+        }
+
+        String courseCode = major;
+        String courseNum;
+        int yearsTillGrad = gradYear - LocalDate.now().getYear();
+        courseNum = switch (yearsTillGrad) {
+            case 0, 1 -> " 4";
+            case 2 -> " 3";
+            case 3 -> " 2";
+            default -> " 1";
+        };
+        String input = courseCode + courseNum;
+        SearchParameter query = new SearchParameter(true, false,
+                false, false, false, input);
+        ArrayList<Course> courses = getResults(query);
+
+        //Since highest course code for HUMAs is 302, change 4's to 3's
+        if(courseNum.equals(" 4")) {
+            courseNum = " 3";
+        }
+        input = "HUMA" + courseNum;
+        query = new SearchParameter(true, false,
+                false, false, false, input);
+        courses.addAll(getResults(query));
+
+        return courses;
+    }
+
+    //endregion
+
     public static void main(String[] args) {
         Search search = new Search();
         String input = "COMP\n8:00";
+        SessionUser user = new SessionUser(false);
 //        SearchParameter param = new SearchParameter(true, true, false, false, false, input);
 //        for(Course course : search.getResults(param)) System.out.println(course);
-        System.out.println(search.feelingLucky());
+        System.out.println(search.searchByProfile(user));
     }
 }

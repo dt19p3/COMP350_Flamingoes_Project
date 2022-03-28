@@ -9,7 +9,7 @@ public class AddCourseScreen extends Screen {
     public SessionUser currentUser;
 
     public AddCourseScreen(Scanner scnr, Schedule currentSchedule, ArrayList<Course> courses, SessionUser currentUser) {
-        super("Add course", new String[]{"Add", "View", "Search", "I'm feeling lucky", "Home", "See recently added"}, scnr);
+        super("Add course", new String[]{"Add", "View", "Search", "I'm feeling lucky", "Search by profile", "Home", "See recently added"}, scnr);
         this.currentSchedule = currentSchedule;
         this.courses = new ArrayList<>(courses);
         this.currentUser = currentUser;
@@ -27,11 +27,21 @@ public class AddCourseScreen extends Screen {
                 return new ExitScreen(in, this);
             }
             int index = Integer.valueOf(entry[1]); //TODO error checking
-            currentSchedule.addCourse(courses.get(index-1));
+            Course courseToAdd = courses.get(index-1);
+            if(courseToAdd.getConflicts()) {
+                System.out.println("This course conflicts with another course in your schedule. Add anyway? (Y/N)");
+                String addAnyway = in.next();
+                if(addAnyway.equalsIgnoreCase("Y")) {
+                    currentSchedule.removeCourse(courseToAdd.conflictingCourse);
+                    currentSchedule.addCourse(courseToAdd);
+                }
+                return new CreateScheduleScreen(in, currentSchedule, currentUser);
+            }
+            currentSchedule.addCourse(courseToAdd);
             if(currentUser.recentlyAdded.size() > 5) {
                 currentUser.recentlyAdded.remove(currentUser.recentlyAdded.get(currentUser.recentlyAdded.size() - 1));
             }
-            currentUser.recentlyAdded.add(courses.get(index - 1));
+            currentUser.recentlyAdded.add(courseToAdd);
             return new CreateScheduleScreen(in, currentSchedule, currentUser);
         }
 
@@ -101,38 +111,21 @@ public class AddCourseScreen extends Screen {
 
             ArrayList<Course> results = search.getResults(query);
 
-            String[] sMeets;
-            for (int i = 0; i < results.size(); i++){
-                String str1 = results.get(i).meets;
-                sMeets = str1.split("");
-                for (int j = 0; j < currentSchedule.getCourses().size(); j++){
-                    for(int k = 0; k < sMeets.length; k++){
-                        if(currentSchedule.getCourses().get(j).meets.contains(sMeets[k])){
-                            if (results.get(i).beginTime.isBefore(currentSchedule.getCourses().get(j).endTime) && results.get(i).beginTime.isAfter(currentSchedule.getCourses().get(j).beginTime) || results.get(i).beginTime == currentSchedule.getCourses().get(j).beginTime ){
-                                results.get(i).setConflicts(true);
-                            }
-                            if (currentSchedule.getCourses().get(j).endTime.isBefore(results.get(i).endTime) && currentSchedule.getCourses().get(j).endTime.isAfter(results.get(i).beginTime) || results.get(i).beginTime == currentSchedule.getCourses().get(j).beginTime ){
-                                results.get(i).setConflicts(true);
-                            }
-                        }
-                    }
-                }
-            }
-
             if (results.isEmpty()) {
                 System.out.println("No results found for the specified query.");
             } else {
                 System.out.println(" #  Course Code        Course Name        Meets        Location   E/C");
                 int entryNo = 1;
+                this.checkConflicts(results);
                 for (Course course : results) {
-                    if (!course.getConflicts()){
-                        System.out.print("[" + entryNo + "] " + course);
-                        entryNo++;
-                    }else{
-                        System.out.println("This course can not be added because it has a time conflict with courses that are already in your current schedule:".toUpperCase(Locale.ROOT));
-                        System.out.print(course);
+                    if (!course.getConflicts()) {
+                        System.out.print("[" + entryNo + "] " + course + "\n");
+                    } else {
+                        System.out.print("[" + entryNo + "] " + course + "    *\n");
                     }
+                    entryNo++;
                 }
+                System.out.println("* - This course conflicts with a course in your schedule.");
             }
 
             //endregion
@@ -148,9 +141,38 @@ public class AddCourseScreen extends Screen {
 
             Course course = search.feelingLucky();
             newCourses.add(course);
+            this.checkConflicts(newCourses);
             System.out.println(" #  Course Code        Course Name        Meets        Location   E/C");
-            System.out.print("[1] " + course);
+            if (!course.getConflicts()) {
+                System.out.print("[1] " + course + "\n");
+            } else {
+                System.out.print("[1] " + course + " *\n");
+            }
+            System.out.println("* - This course conflicts with a course in your schedule.");
 
+            return new AddCourseScreen(in, currentSchedule, newCourses, currentUser);
+        }
+        else if (inputLine.trim().equalsIgnoreCase("Search by profile")) {
+            Search search = new Search();
+            ArrayList<Course> newCourses = search.searchByProfile(currentUser);
+
+            if(newCourses.isEmpty()) {
+                System.out.println("You must complete account setup to access this feature.");
+            }
+            else {
+                System.out.println(" #  Course Code        Course Name        Meets        Location   E/C");
+                int entryNo = 1;
+                this.checkConflicts(newCourses);
+                for (Course course : newCourses) {
+                    if (!course.getConflicts()) {
+                        System.out.print("[" + entryNo + "] " + course + "\n");
+                    } else {
+                        System.out.print("[" + entryNo + "] " + course + "*\n");
+                    }
+                    entryNo++;
+                }
+                System.out.println("* - This course conflicts with a course in your schedule.");
+            }
             return new AddCourseScreen(in, currentSchedule, newCourses, currentUser);
         } else if (inputWord.equalsIgnoreCase("home")) {
             return new HomeScreen(in, currentUser);
@@ -171,6 +193,40 @@ public class AddCourseScreen extends Screen {
         }
     }
 
+    //region checkConflicts()
+
+    /**
+     * Checks which courses in a given list conflict with currently scheduled ones
+     * @param results The list of courses to be checked
+     */
+    private void checkConflicts(ArrayList<Course> results) {
+        String[] sMeets;
+        for (Course result : results) {
+            String str1 = result.meets;
+            sMeets = str1.split("");
+            for (int j = 0; j < currentSchedule.getCourses().size(); j++) {
+                for (String sMeet : sMeets) {
+                    if (currentSchedule.getCourses().get(j).meets.contains(sMeet)) {
+                        if (result.beginTime.isBefore(currentSchedule.getCourses().get(j).endTime)
+                                && result.beginTime.isAfter(currentSchedule.getCourses().get(j).beginTime)
+                                || result.beginTime.equals(currentSchedule.getCourses().get(j).beginTime)) {
+                            result.setConflicts(true);
+                            result.setConflictingCourse(currentSchedule.getCourses().get(j));
+                        }
+                        if (currentSchedule.getCourses().get(j).endTime.isBefore(result.endTime)
+                                && currentSchedule.getCourses().get(j).endTime.isAfter(result.beginTime)
+                                || result.beginTime.equals(currentSchedule.getCourses().get(j).beginTime)) {
+                            result.setConflicts(true);
+                            result.setConflictingCourse(currentSchedule.getCourses().get(j));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    //endregion
+
     @Override
     public void visualize() {
         if (courses.size() != 0) {
@@ -183,8 +239,9 @@ public class AddCourseScreen extends Screen {
                             "\t\t\t\t\t|              - Add <index of course>                                 |\n" +
                             "\t\t\t\t\t|              - View                                                  |\n" +
                             "\t\t\t\t\t|              - I'm feeling lucky                                     |\n" +
-                            "\t\t\t\t\t|              - Home                                                  |\n" +
                             "\t\t\t\t\t|              - Search                                                |\n" +
+                            "\t\t\t\t\t|              - Search by profile                                     |\n" +
+                            "\t\t\t\t\t|              - Home                                                  |\n" +
                             "\t\t\t\t\t|              - See recently added                                    |\n" +
                             "\t\t\t\t\t|______________________________________________________________________|\n",currentSchedule.getName()));
         } else {
@@ -194,10 +251,12 @@ public class AddCourseScreen extends Screen {
                             "\t\t\t\t\t| Add Course                                       from the Flamingoes |\n" +
                             "\t\t\t\t\t|                                                                      |\n" +
                             "\t\t\t\t\t| Enter one of the following:                                          |\n" +
+                            "\t\t\t\t\t|              - Add <index of course>                                 |\n" +
                             "\t\t\t\t\t|              - View                                                  |\n" +
                             "\t\t\t\t\t|              - I'm feeling lucky                                     |\n" +
-                            "\t\t\t\t\t|              - Home                                                  |\n" +
                             "\t\t\t\t\t|              - Search                                                |\n" +
+                            "\t\t\t\t\t|              - Search by profile                                     |\n" +
+                            "\t\t\t\t\t|              - Home                                                  |\n" +
                             "\t\t\t\t\t|              - See recently added                                    |\n" +
                             "\t\t\t\t\t|______________________________________________________________________|\n",currentSchedule.getName()));
         }

@@ -1,3 +1,6 @@
+import org.json.simple.parser.ParseException;
+
+import java.io.IOException;
 import java.util.Scanner;
 
 public class EditProfileScreen extends Screen {
@@ -9,16 +12,18 @@ public class EditProfileScreen extends Screen {
     }
 
     @Override
-    public Screen input() {
+    public Screen input() throws IOException, ParseException {
         String inputWord = in.next();
         if(inputWord.equalsIgnoreCase("major")){
             String nextWord = in.next();
             currentUser.profile.major = nextWord;
+            currentUser.profile.storeMajor(nextWord);
             return new ViewProfileScreen(in,currentUser);
         }
         else if(inputWord.equalsIgnoreCase("year")){
             String nextWord = in.next();
             currentUser.profile.gradYear = Short.valueOf(nextWord);
+            currentUser.profile.storeGradYear(Short.valueOf(nextWord));
             return new ViewProfileScreen(in,currentUser);
         }
         else if(inputWord.equalsIgnoreCase("home")){

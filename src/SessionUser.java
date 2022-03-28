@@ -1,4 +1,7 @@
+import org.json.simple.parser.ParseException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 
 public class SessionUser {
     //...attributes etc. This is just for testing
@@ -12,9 +15,25 @@ public class SessionUser {
         schedules = new ArrayList<>();
         recentlyAdded = new ArrayList<>();
     }
-    public void login(Profile p){
+    public void login(Profile p) throws Exception {
         //TODO make schedules equal to user's saved schedules CHRISTIAN
         this.profile = p;
+        Store s = new Store(profile.username, profile.password);
+        if(s.login(s.username,s.password)){
+            profile.gradYear = (short) s.getGradYear(profile.username);
+            profile.major = s.getMajor(profile.username);
+            this.schedules = s.getSchedules(s.username);
+        }
+
+
+    }
+
+    public void register(String username, String password) throws Exception {
+        Store s = new Store(username, password);
+        byte[] salt = s.generateSalt();
+        String saltString = Base64.getEncoder().encodeToString(salt);
+        s.storeAccount(username, saltString, s.encrypt(password, salt));
+        this.profile = new Profile(s.username, s.password);
 
 
     }

@@ -7,12 +7,21 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Scanner;
 
 @SuppressWarnings("ALL")
 public class Store {
-    public static byte[] generateSalt() throws Exception{
+    public String username;
+    public String password;
+    public ArrayList<Schedule> schedules;
+    public Store(String username, String password){
+        this.username = username;
+        this.password = password;
+    }
+
+    public byte[] generateSalt() throws Exception{
         try {
             SecureRandom rand = new SecureRandom();
             byte[] salt = new byte[16];
@@ -23,7 +32,7 @@ public class Store {
         }
     }
 
-    public static String encrypt(final String base, byte[] salt)throws Exception{
+    public String encrypt(final String base, byte[] salt)throws Exception{
         try{
             final MessageDigest hashFunction = MessageDigest.getInstance("SHA-256");
             hashFunction.update(salt);
@@ -40,7 +49,7 @@ public class Store {
         }
     }
 
-    public static void storeAccount(String username, String salt, String hashpass) throws IOException, ParseException {
+    public void storeAccount(String username, String salt, String hashpass) throws IOException, ParseException {
         //Reads JSON File and copies it to users
         Object o = new JSONParser().parse(new FileReader("accounts.json"));
         JSONObject users = (JSONObject) o;
@@ -77,7 +86,7 @@ public class Store {
         addInitialSchedules(username);
     }
 
-    public static void login(String username, String password) throws Exception {
+    public boolean login(String username, String password) throws Exception {
         //Reads json file
         Object o = new JSONParser().parse(new FileReader("accounts.json"));
         JSONObject users = (JSONObject) o;
@@ -94,19 +103,18 @@ public class Store {
                 String s =accDet.get("Salt").toString();
                 byte[] sa = Base64.getDecoder().decode(s);
                 if(accDet.get("Hashed Password").equals(encrypt(password, sa)))
-                    System.out.println("Login Successful!");
-                else
-                    System.out.println("Login Failed");
-                break;
+                    //System.out.println("Login Successful!");
+                    return true;
+                else return false;
             }
         }
-        if(!found) System.out.println("No Account Found");
+        return found;
     }
 
 
 
 
-    public static void addUserDetails(String username) throws IOException, ParseException {
+    public void addUserDetails(String username) throws IOException, ParseException {
         Object o = new JSONParser().parse(new FileReader("accountDetails.json"));
         JSONObject users = (JSONObject) o;
 
@@ -134,14 +142,14 @@ public class Store {
         }
     }
 
-    public static void addInitialSchedules(String username) throws IOException, ParseException{
+    public void addInitialSchedules(String username) throws IOException, ParseException{
         Object o = new JSONParser().parse(new FileReader("accountSchedules.json"));
         JSONObject users = (JSONObject) o;
 
         JSONArray original = new JSONArray(users.get("Users").toString());
 
         JSONObject schedules = new JSONObject();
-        schedules.put(null,null);
+        schedules.put("Schedules",null);
 
         JSONObject account = new JSONObject();
         account.put(username, schedules);
@@ -160,7 +168,7 @@ public class Store {
         }
     }
 
-    public static int getGradYear(String username) throws IOException, ParseException {
+    public int getGradYear(String username) throws IOException, ParseException {
         int gradYear = 0;
         Object o = new JSONParser().parse(new FileReader("accountDetails.json"));
         JSONObject users = (JSONObject) o;
@@ -178,7 +186,7 @@ public class Store {
         return gradYear;
     }
 
-    public static void setGradYear(String username, int gradYear)throws IOException, ParseException{
+    public void setGradYear(String username, int gradYear)throws IOException, ParseException{
         Object o = new JSONParser().parse(new FileReader("accountDetails.json"));
         JSONObject users = (JSONObject) o;
 
@@ -211,7 +219,7 @@ public class Store {
         }
     }
 
-    public static String getMajor(String username) throws IOException, ParseException {
+    public String getMajor(String username) throws IOException, ParseException {
         String major = "";
         Object o = new JSONParser().parse(new FileReader("accountDetails.json"));
         JSONObject users = (JSONObject) o;
@@ -230,7 +238,7 @@ public class Store {
         return major;
     }
 
-    public static void setMajor(String username, String major)throws IOException, ParseException{
+    public void setMajor(String username, String major)throws IOException, ParseException{
         Object o = new JSONParser().parse(new FileReader("accountDetails.json"));
         JSONObject users = (JSONObject) o;
 
@@ -263,7 +271,7 @@ public class Store {
         }
     }
 
-    public static void addSchedule(String username, String scheduleName, Schedule schedule)throws IOException, ParseException{
+    public void storeSchedules(String username, ArrayList<Schedule> schedules)throws IOException, ParseException{
         Object o = new JSONParser().parse(new FileReader("accountSchedules.json"));
         JSONObject users = (JSONObject) o;
 
@@ -273,7 +281,8 @@ public class Store {
             JSONObject checkAcc = (JSONObject) new JSONParser().parse(arr.getJSONObject(i).toString());
             if(checkAcc.containsKey(username)){
                 JSONObject accDet = (JSONObject) checkAcc.get(username);
-                accDet.put(scheduleName, schedule);
+
+                accDet.replace("Schedules", schedules);
 
                 JSONObject account = new JSONObject();
                 account.put(username, accDet);
@@ -295,22 +304,24 @@ public class Store {
         }
     }
 
-    public static Schedule getSchedule(String username, String scheduleName) throws IOException, ParseException {
-        Schedule schedule = null;
+
+    public ArrayList<Schedule> getSchedules(String username) throws ParseException, IOException {
+        ArrayList<Schedule> schedules = null;
         Object o = new JSONParser().parse(new FileReader("accountSchedules.json"));
         JSONObject users = (JSONObject) o;
 
         //copies the users into a JSONArray
         JSONArray arr = new JSONArray(users.get("Users").toString());
 
-        for(int i = 0; i<arr.length(); i++){
+        for(int i = 0; i<arr.length(); i++) {
             JSONObject checkAcc = (JSONObject) new JSONParser().parse(arr.getJSONObject(i).toString());
-            if(checkAcc.containsKey(username)){
+            if (checkAcc.containsKey(username)) {
                 JSONObject accDet = (JSONObject) checkAcc.get(username);
-                return (Schedule) accDet.get(scheduleName);
+                this.schedules = (ArrayList<Schedule>) accDet.get("Schedules");
+                return (ArrayList<Schedule>) accDet.get("Schedules");
             }
         }
-        return schedule;
+        return schedules;
     }
 
 //    public static void consoleVersion() throws Exception {

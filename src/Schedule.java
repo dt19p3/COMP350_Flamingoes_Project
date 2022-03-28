@@ -12,9 +12,7 @@ public class Schedule {
         this.name = name;
         courses = new ArrayList<>();
     }
-    public void addCourse(Course course) {
-        courses.add(course);
-    }
+    public void addCourse(Course course) { courses.add(course); }
 
     public void removeCourse(Course course) {
         if (courses.size() == 0) {

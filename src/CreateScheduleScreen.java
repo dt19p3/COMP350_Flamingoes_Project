@@ -47,8 +47,8 @@ public class CreateScheduleScreen extends Screen {
                     "\t\t\t\t\t|                                                                      |\n" +
                     "\t\t\t\t\t| Enter one of the following:                                          |\n" +
                     "\t\t\t\t\t|              - Add                                                   |\n" +
-                    "\t\t\t\t\t|              - Remove <index of course>                              |\n" +
                     "\t\t\t\t\t|              - Home                                                  |\n" +
+                    "\t\t\t\t\t|                                                                      |\n" +
                     "\t\t\t\t\t|                                                                      |\n" +
                     "\t\t\t\t\t|                                                                      |\n" +
                     "\t\t\t\t\t|______________________________________________________________________|\n",currentSchedule.getName()));

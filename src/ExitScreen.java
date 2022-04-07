@@ -24,12 +24,14 @@ public class ExitScreen extends Screen {
 
     @Override
     public void visualize() {
-        System.out.println("\t\t\t\t\t.______________________________________________________________________.\n" +
+        System.out.println("\t\t\t\t\t(If you weren't expecting an exit screen, you may have been directed here because you entered an invalid command)\n" +
+                "\t\t\t\t\t.______________________________________________________________________.\n" +
                 "\t\t\t\t\t| Exit                                             from the Flamingoes |\n" +
                 "\t\t\t\t\t|                                                                      |\n" +
                 "\t\t\t\t\t| Enter one of the following:                                          |\n" +
                 "\t\t\t\t\t|              - Exit                                                  |\n" +
                 "\t\t\t\t\t|              - Cancel                                                |\n" +
+                "\t\t\t\t\t|                                                                      |\n" +
                 "\t\t\t\t\t|                                                                      |\n" +
                 "\t\t\t\t\t|                                                                      |\n" +
                 "\t\t\t\t\t|______________________________________________________________________|\n");

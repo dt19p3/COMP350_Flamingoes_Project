@@ -119,16 +119,20 @@ public class AddCourseScreen extends Screen {
             } else {
                 System.out.println(" #  Course Code        Course Name        Meets        Location   E/C");
                 int entryNo = 1;
+                boolean areConflicts = false;
                 this.checkConflicts(results);
                 for (Course course : results) {
                     if (!course.getConflicts()) {
                         System.out.print("[" + entryNo + "] " + course + "\n");
                     } else {
                         System.out.print("[" + entryNo + "] " + course + "    *\n");
+                        areConflicts = true;
                     }
                     entryNo++;
                 }
-                System.out.println("* - This course conflicts with a course in your schedule.");
+                if(areConflicts) {
+                    System.out.println("* - This course conflicts with a course in your schedule.");
+                }
             }
 
             //endregion

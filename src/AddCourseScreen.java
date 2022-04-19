@@ -149,13 +149,17 @@ public class AddCourseScreen extends Screen {
             Course course = search.feelingLucky();
             newCourses.add(course);
             this.checkConflicts(newCourses);
+            boolean areConflicts = false;
             System.out.println(" #  Course Code        Course Name        Meets        Location   E/C");
             if (!course.getConflicts()) {
                 System.out.print("[1] " + course + "\n");
             } else {
                 System.out.print("[1] " + course + " *\n");
+                areConflicts = true;
             }
-            System.out.println("* - This course conflicts with a course in your schedule.");
+            if(areConflicts) {
+                System.out.println("* - This course conflicts with a course in your schedule.");
+            }
 
             return new AddCourseScreen(in, currentSchedule, newCourses, currentUser);
         }
@@ -169,16 +173,20 @@ public class AddCourseScreen extends Screen {
             else {
                 System.out.println(" #  Course Code        Course Name        Meets        Location   E/C");
                 int entryNo = 1;
+                boolean areConflicts = false;
                 this.checkConflicts(newCourses);
                 for (Course course : newCourses) {
                     if (!course.getConflicts()) {
                         System.out.print("[" + entryNo + "] " + course + "\n");
                     } else {
                         System.out.print("[" + entryNo + "] " + course + "*\n");
+                        areConflicts = true;
                     }
                     entryNo++;
                 }
-                System.out.println("* - This course conflicts with a course in your schedule.");
+                if(areConflicts) {
+                    System.out.println("* - This course conflicts with a course in your schedule.");
+                }
             }
             return new AddCourseScreen(in, currentSchedule, newCourses, currentUser);
         } else if (inputWord.equalsIgnoreCase("home")) {

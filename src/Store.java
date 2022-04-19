@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Scanner;
 
-@SuppressWarnings("ALL")
+//@SuppressWarnings("ALL")
 public class Store {
     public String username;
     public String password;

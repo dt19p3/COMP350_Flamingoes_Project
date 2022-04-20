@@ -122,6 +122,9 @@ public class AddCourseScreen extends Screen {
                 boolean areConflicts = false;
                 this.checkConflicts(results);
                 for (Course course : results) {
+                    if(course.enrollment == course.capacity){
+                        results.remove(course);
+                    }
                     if (!course.getConflicts()) {
                         System.out.print("[" + entryNo + "] " + course + "\n");
                     } else {
@@ -151,6 +154,9 @@ public class AddCourseScreen extends Screen {
             this.checkConflicts(newCourses);
             boolean areConflicts = false;
             System.out.println(" #  Course Code        Course Name        Meets        Location   E/C");
+            if(course.enrollment == course.capacity){
+                System.out.print("THIS IS A DUPLICATE COURSE");
+            }
             if (!course.getConflicts()) {
                 System.out.print("[1] " + course + "\n");
             } else {
@@ -176,6 +182,9 @@ public class AddCourseScreen extends Screen {
                 boolean areConflicts = false;
                 this.checkConflicts(newCourses);
                 for (Course course : newCourses) {
+                    if(course.enrollment == course.capacity){
+                        newCourses.remove(course);
+                    }
                     if (!course.getConflicts()) {
                         System.out.print("[" + entryNo + "] " + course + "\n");
                     } else {

@@ -1,3 +1,5 @@
+import org.apache.commons.collections4.bag.SynchronizedSortedBag;
+
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Scanner;
@@ -155,7 +157,7 @@ public class AddCourseScreen extends Screen {
             boolean areConflicts = false;
             System.out.println(" #  Course Code        Course Name        Meets        Location   E/C");
             if(course.enrollment == course.capacity){
-                System.out.print("THIS IS A DUPLICATE COURSE");
+                System.out.print("COURSE ALREADY IN SCHEDULE, SEARCH AGAIN");
             }
             if (!course.getConflicts()) {
                 System.out.print("[1] " + course + "\n");
@@ -182,13 +184,13 @@ public class AddCourseScreen extends Screen {
                 boolean areConflicts = false;
                 this.checkConflicts(newCourses);
                 for (Course course : newCourses) {
-                    if(course.enrollment == course.capacity){
-                        newCourses.remove(course);
-                    }
-                    if (!course.getConflicts()) {
-                        System.out.print("[" + entryNo + "] " + course + "\n");
-                    } else {
+                    if (course.getConflicts()) {
                         System.out.print("[" + entryNo + "] " + course + "*\n");
+                    } else if (course.enrollment == course.capacity){
+                        System.out.print("FULL " + course + "\n");
+                    }
+                    else {
+                        System.out.print("[" + entryNo + "] " + course + "\n");
                         areConflicts = true;
                     }
                     entryNo++;

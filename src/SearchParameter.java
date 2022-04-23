@@ -15,7 +15,8 @@ public class SearchParameter {
         NAME,
         DATE,
         START_TIME,
-        END_TIME
+        END_TIME,
+        CREDITS
     }
     private EnumSet<Flag> flags = EnumSet.noneOf(Flag.class);
     private String value;
@@ -32,12 +33,13 @@ public class SearchParameter {
      * @param value Specifies values entered by user, each value should be new line delimited
      */
     public SearchParameter(boolean byCourseCode, boolean byStartTime, boolean byEndTime, boolean byDate,
-                           boolean byName, String value) {
+                           boolean byName, boolean byCredits, String value) {
         if(byCourseCode) flags.add(Flag.CODE);
         if(byStartTime) flags.add(Flag.START_TIME);
         if(byEndTime) flags.add(Flag.END_TIME);
         if(byName) flags.add(Flag.NAME);
         if(byDate) flags.add(Flag.DATE);
+        if(byCredits) flags.add(Flag.CREDITS);
         this.value = value;
     }
 

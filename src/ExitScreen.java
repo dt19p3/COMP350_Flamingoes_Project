@@ -3,7 +3,7 @@ import java.util.Scanner;
  * The exit screen
  */
 public class ExitScreen extends Screen {
-    private Screen lastScreen;
+    private Screen lastScreen; //the previous screen
 
     public ExitScreen(Scanner scnr, Screen lastScreen) {
         super("Exit", new String[] {"Exit","Cancel"}, scnr);

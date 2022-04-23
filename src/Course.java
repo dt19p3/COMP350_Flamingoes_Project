@@ -24,9 +24,9 @@ public class Course {
 
     // this is a constructor that uses all fields in the database
     public Course (String code,  String shortTitle, String longTitle, LocalTime beginTime, LocalTime endTime,
-                   String meets, String building, String room, int enrollment, int capacity){
+                   String meets, String building, String room, int enrollment, int capacity, int numCredits){
         this(code,  shortTitle, longTitle,beginTime, endTime, meets, building, room, enrollment, capacity,
-                0, "", "", "", new ArrayList<>(), new ArrayList<>());
+                numCredits, "", "", "", new ArrayList<>(), new ArrayList<>());
         this.conflicts = false;
         this.conflictingCourse = null;
     }

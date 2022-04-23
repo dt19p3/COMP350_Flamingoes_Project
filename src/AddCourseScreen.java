@@ -64,6 +64,7 @@ public class AddCourseScreen extends Screen {
             boolean byStartTime = false;
             boolean byDate = false;
             boolean byName = false;
+            boolean byCredits = false;
 
             //endregion
 
@@ -100,13 +101,19 @@ public class AddCourseScreen extends Screen {
                 searchString += input + "\n";
                 byName = true;
             }
+            System.out.println("Course credit hours: ");
+            input = in.nextLine();
+            if (!input.trim().equalsIgnoreCase("N") && !input.isEmpty()) {
+                searchString += input + "\n";
+                byCredits = true;
+            }
 
             //endregion
 
             //region Print Results
 
             SearchParameter query = new SearchParameter(byCode, byStartTime, byEndTime,
-                    byDate, byName, searchString);
+                    byDate, byName, byCredits, searchString);
 
             //Make sure user actually entered a query
             if(query.getFlags().isEmpty()) {
@@ -123,10 +130,14 @@ public class AddCourseScreen extends Screen {
                 int entryNo = 1;
                 boolean areConflicts = false;
                 this.checkConflicts(results);
+                ArrayList<Course> toRemove = new ArrayList<>();
                 for (Course course : results) {
-                    if(course.enrollment == course.capacity){
-                        results.remove(course);
+                    if (course.enrollment >= course.capacity) {
+                        toRemove.add(course);
                     }
+                }
+                results.removeAll(toRemove);
+                for (Course course : results) {
                     if (!course.getConflicts()) {
                         System.out.print("[" + entryNo + "] " + course + "\n");
                     } else {

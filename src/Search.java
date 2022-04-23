@@ -42,6 +42,7 @@ public class Search {
     final int COL_ROOM = 7;
     final int COL_ENROLLMENT = 8;
     final int COL_CAPACITY = 9;
+    final int COL_CREDITS = 10;
 
     SimpleDateFormat formatTime = new SimpleDateFormat("HH:mm");
 
@@ -54,7 +55,7 @@ public class Search {
      */
     public Search() {
         try {
-            FileInputStream coursesFIS = new FileInputStream("CourseDB_WithFictionalCapacities.xlsx");
+            FileInputStream coursesFIS = new FileInputStream("new_data.xlsx");
             courses = new XSSFWorkbook(coursesFIS);
         }
         catch(FileNotFoundException e) {
@@ -254,6 +255,30 @@ public class Search {
             }
         }
 
+        //region Next, filter by course credit hours
+
+        if(searchParams.getFlags().contains(SearchParameter.Flag.CREDITS)) {
+            //Assumes that user input is being passed in as a new-line delineated string
+            String code = input.split("\n")[nextInput];
+            nextInput++;
+
+            //Iterate through ArrayList using iterator so we can remove from it
+            for (Iterator<Row> it = matchingRows.iterator(); it.hasNext(); ) {
+                Row row = it.next();
+                Cell courseCredits = row.getCell(COL_CREDITS);
+
+                //If the codes don't match, remove that row
+                if(!(courseCredits.getStringCellValue().contains(code))) {
+                    it.remove();
+                }
+                //We need to note that matches were found, if not we need to report that the search found nothing
+                else if (!matchesFound) {
+                    matchesFound = true;
+                }
+            }
+        }
+
+
         //endregion
 
         //region Returns
@@ -277,11 +302,12 @@ public class Search {
             if(row.getCell(COL_ROOM).toString().contains(".")) {
                 room = row.getCell(COL_ROOM).toString().split("\\.")[0];
             }
-            int enrollment = (int)row.getCell(COL_ENROLLMENT).getNumericCellValue();
-            int capacity = (int)row.getCell(COL_CAPACITY).getNumericCellValue();
+            int enrollment = Integer.valueOf(row.getCell(COL_ENROLLMENT).getStringCellValue());
+            int capacity = Integer.valueOf(row.getCell(COL_CAPACITY).getStringCellValue());
+            int numCredits = Integer.valueOf(row.getCell(COL_CREDITS).getStringCellValue());
 
             results.add(new Course(code, shortTitle, longTitle, start, end, days, building, room,
-                    enrollment, capacity));
+                    enrollment, capacity, numCredits));
         }
 
         return results;
@@ -340,11 +366,12 @@ public class Search {
         if(row.getCell(COL_ROOM).toString().contains(".")) {
             room = row.getCell(COL_ROOM).toString().split("\\.")[0];
         }
-        int enrollment = (int)row.getCell(COL_ENROLLMENT).getNumericCellValue();
-        int capacity = (int)row.getCell(COL_CAPACITY).getNumericCellValue();
+        int enrollment = Integer.valueOf(row.getCell(COL_ENROLLMENT).getStringCellValue());
+        int capacity = Integer.valueOf(row.getCell(COL_CAPACITY).getStringCellValue());
+        int numCredits = Integer.valueOf(row.getCell(COL_CREDITS).getStringCellValue());
 
         return new Course(code, shortTitle, longTitle, start, end, days, building, room,
-                enrollment, capacity);
+                enrollment, capacity, numCredits);
     }
 
     //endregion
@@ -379,7 +406,7 @@ public class Search {
         };
         String input = courseCode + courseNum;
         SearchParameter query = new SearchParameter(true, false,
-                false, false, false, input);
+                false, false, false, false, input);
         ArrayList<Course> courses = getResults(query);
 
         //Since highest course code for HUMAs is 302, change 4's to 3's
@@ -388,7 +415,7 @@ public class Search {
         }
         input = "HUMA" + courseNum;
         query = new SearchParameter(true, false,
-                false, false, false, input);
+                false, false, false, false, input);
         courses.addAll(getResults(query));
 
         return courses;

@@ -7,6 +7,7 @@ import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Formatter;
@@ -293,6 +294,8 @@ public class Search {
             LocalTime end = null;
             if(row.getCell(COL_END).getCellTypeEnum().equals(CellType.NUMERIC))
                 end = LocalTime.parse(formatTime.format(row.getCell(COL_END).getDateCellValue()));
+//            LocalTime start = LocalTime.parse(row.getCell(COL_START).getStringCellValue(), DateTimeFormatter.ISO_LOCAL_TIME);
+//            LocalTime end = LocalTime.parse(row.getCell(COL_END).getStringCellValue(), DateTimeFormatter.ISO_LOCAL_TIME);
             String days = row.getCell(COL_DAYS).getStringCellValue();
             String building = row.getCell(COL_BUILDING).getStringCellValue();
             if(building.equals("NULL")) {

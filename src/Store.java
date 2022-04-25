@@ -1,27 +1,63 @@
-import org.json.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
-import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
-import java.util.ArrayList;
+import java.sql.*;
 import java.util.Base64;
-import java.util.Scanner;
 
-//@SuppressWarnings("ALL")
 public class Store {
-    public String username;
-    public String password;
-    public ArrayList<Schedule> schedules;
-    public Store(String username, String password){
-        this.username = username;
-        this.password = password;
+
+    private Connection connect() {
+        String url = "jdbc:sqlite:C:\\Users\\PrevitaliCA18\\IdeaProjects\\SETest\\Database\\passwords.db";
+        Connection conn = null;
+        try {
+            conn = DriverManager.getConnection(url);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return conn;
     }
 
-    public byte[] generateSalt() throws Exception{
+    public static void createNewDatabase(String fileName) {
+        String url = "jdbc:sqlite:C:\\Users\\PrevitaliCA18\\IdeaProjects\\SETest\\Database\\" + fileName;
+
+        try {
+            Connection conn = DriverManager.getConnection(url);
+            if (conn != null) {
+                DatabaseMetaData meta = conn.getMetaData();
+                System.out.println("The driver name is " + meta.getDriverName());
+                System.out.println("A new database has been created.");
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    public static void createNewTable(){
+        String url = "jdbc:sqlite:SETest\\Database\\passwords.db";
+
+
+        String sql = """
+                CREATE TABLE IF NOT EXISTS users (
+                 user text PRIMARY KEY,
+                 salt text,
+                 hashedPassword text,
+                 gradYear integer,
+                 major text
+                );""";
+        try{
+            Connection conn = DriverManager.getConnection(url);
+            Statement stmt = conn.createStatement();
+            stmt.execute(sql);
+
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+    }
+
+
+    public static byte[] generateSalt() throws Exception{
         try {
             SecureRandom rand = new SecureRandom();
             byte[] salt = new byte[16];
@@ -32,7 +68,7 @@ public class Store {
         }
     }
 
-    public String encrypt(final String base, byte[] salt)throws Exception{
+    public static String encrypt(final String base, byte[] salt)throws Exception{
         try{
             final MessageDigest hashFunction = MessageDigest.getInstance("SHA-256");
             hashFunction.update(salt);
@@ -49,315 +85,140 @@ public class Store {
         }
     }
 
-    public void storeAccount(String username, String salt, String hashpass) throws IOException, ParseException {
-        //Reads JSON File and copies it to users
-        Object o = new JSONParser().parse(new FileReader("accounts.json"));
-        JSONObject users = (JSONObject) o;
+    public void register(String username, String password) throws Exception {
+        byte[] salt = generateSalt();
+        String saltString = Base64.getEncoder().encodeToString(salt);
+        String encryptedPassword = encrypt(password, salt);
 
-        //copies the users into a JSONArray
-        JSONArray original = new JSONArray(users.get("Users").toString());
+        String sql = "INSERT INTO users(user, salt, hashedPassword, gradYear, major) VALUES(?,?,?,?,?)";
 
-        //stores salt and hashed password details
-        JSONObject accountDetails = new JSONObject();
-        accountDetails.put("Salt", salt);
-        accountDetails.put("Hashed Password", hashpass);
-
-        //makes account object with details
-        JSONObject account = new JSONObject();
-        account.put(username, accountDetails);
-
-        //adds the user to the already existing file
-        original.put(account);
-
-        //puts the updated  final user list in the json file
-        JSONObject updated = new JSONObject();
-        updated.put("Users", original);
-
-        //writes to JSON File
         try{
-            FileWriter file = new FileWriter("accounts.json");
-            file.write(updated.toString());
-            file.flush();
-            file.close();
-        }catch(IOException e){
-            e.printStackTrace();
+            Connection conn = this.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            pstmt.setString(2, saltString);
+            pstmt.setString(3,encryptedPassword);
+            pstmt.setInt(4, 0);
+            pstmt.setString(5, "Undeclared");
+            pstmt.executeUpdate();
+        } catch (SQLException e){
+            System.out.println(e.getMessage());
         }
-        addUserDetails(username);
-        addInitialSchedules(username);
     }
 
-    public boolean login(String username, String password) throws Exception {
-        //Reads json file
-        Object o = new JSONParser().parse(new FileReader("accounts.json"));
-        JSONObject users = (JSONObject) o;
-
-        //copies the users into a JSONArray
-        JSONArray arr = new JSONArray(users.get("Users").toString());
-
+    public boolean checkForUser(String username){
         boolean found = false;
-        for(int i = 0; i<arr.length(); i++){
-            JSONObject checkAcc = (JSONObject) new JSONParser().parse(arr.getJSONObject(i).toString());
-            if(checkAcc.containsKey(username)){
-                found = true;
-                JSONObject accDet = (JSONObject) checkAcc.get(username);
-                String s =accDet.get("Salt").toString();
-                byte[] sa = Base64.getDecoder().decode(s);
-                if(accDet.get("Hashed Password").equals(encrypt(password, sa)))
-                    //System.out.println("Login Successful!");
-                    return true;
-                else return false;
-            }
+        String sql = "SELECT * FROM users WHERE user = " + username;
+        try{
+            Connection conn = this.connect();
+            Statement stmt  = conn.createStatement();
+            ResultSet rs    = stmt.executeQuery(sql);
+
+            if(rs.next()) found = true;
+
+        }catch(SQLException e){
+            return false;
         }
         return found;
+
     }
 
+    public void login(String username, String password){
+        if(checkForUser(username)){
+            String sql = "SELECT * FROM users where user = " + username;
+            try{
+                Connection conn = this.connect();
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql);
 
+                String userSalt = rs.getString("salt");
+                byte[] salt = Base64.getDecoder().decode(userSalt);
+                if(rs.getString("hashedPassword").equals(encrypt(password, salt)))
+                    System.out.println("Login Successful!");
+                else
+                    System.out.println("Login Failed");
+            }catch (SQLException e){
+                System.out.println(e.getMessage());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        else{
+            System.out.println("No User found");
+        }
+    }
 
-
-    public void addUserDetails(String username) throws IOException, ParseException {
-        Object o = new JSONParser().parse(new FileReader("accountDetails.json"));
-        JSONObject users = (JSONObject) o;
-
-        JSONArray original = new JSONArray(users.get("Users").toString());
-
-        JSONObject details = new JSONObject();
-        details.put("Major", "Undeclared");
-        details.put("Graduation Year", 0000);
-
-        JSONObject account = new JSONObject();
-        account.put(username, details);
-
-        original.put(account);
-
-        JSONObject updated = new JSONObject();
-        updated.put("Users", original);
+    public void setGradYear(String username, int gradYear){
+        String sql = "UPDATE users SET gradYear = ? WHERE user = ?";
 
         try{
-            FileWriter file = new FileWriter("accountDetails.json");
-            file.write(updated.toString());
-            file.flush();
-            file.close();
-        }catch(IOException e){
-            e.printStackTrace();
+            Connection conn = this.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, gradYear);
+            pstmt.setString(2, username);
+            pstmt.executeUpdate();
+        }catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
     }
 
-    public void addInitialSchedules(String username) throws IOException, ParseException{
-        Object o = new JSONParser().parse(new FileReader("accountSchedules.json"));
-        JSONObject users = (JSONObject) o;
+    public int getGradYear(String username){
+        int year = 0;
+        String sql = "SELECT * FROM users WHERE user = " + username;
 
-        JSONArray original = new JSONArray(users.get("Users").toString());
+        try {
+            Connection conn = this.connect();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
 
-        JSONObject schedules = new JSONObject();
-        schedules.put("Schedules",null);
+            year = rs.getInt("gradYear");
+        }catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return year;
+    }
 
-        JSONObject account = new JSONObject();
-        account.put(username, schedules);
+    public void setMajor(String username, String major){
+        String sql = "UPDATE users SET major = ? WHERE user = ?";
 
-        original.put(account);
-
-        JSONObject updated = new JSONObject();
-        updated.put("Users", original);
         try{
-            FileWriter file = new FileWriter("accountSchedules.json");
-            file.write(updated.toString());
-            file.flush();
-            file.close();
-        }catch(IOException e){
-            e.printStackTrace();
+            Connection conn = this.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, major);
+            pstmt.setString(2, username);
+            pstmt.executeUpdate();
+        }catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
     }
 
-    public int getGradYear(String username) throws IOException, ParseException {
-        int gradYear = 0;
-        Object o = new JSONParser().parse(new FileReader("accountDetails.json"));
-        JSONObject users = (JSONObject) o;
+    public String getMajor(String username){
+        String major = null;
+        String sql = "SELECT * FROM users WHERE user = " + username;
 
-        //copies the users into a JSONArray
-        JSONArray arr = new JSONArray(users.get("Users").toString());
+        try {
+            Connection conn = this.connect();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
 
-        for(int i = 0; i<arr.length(); i++){
-            JSONObject checkAcc = (JSONObject) new JSONParser().parse(arr.getJSONObject(i).toString());
-            if(checkAcc.containsKey(username)){
-                JSONObject accDet = (JSONObject) checkAcc.get(username);
-                return Integer.parseInt(accDet.get("Graduation Year").toString());
-            }
-        }
-        return gradYear;
-    }
-
-    public void setGradYear(String username, int gradYear)throws IOException, ParseException{
-        Object o = new JSONParser().parse(new FileReader("accountDetails.json"));
-        JSONObject users = (JSONObject) o;
-
-        //copies the users into a JSONArray
-        JSONArray arr = new JSONArray(users.get("Users").toString());
-        for(int i = 0; i<arr.length(); i++){
-            JSONObject checkAcc = (JSONObject) new JSONParser().parse(arr.getJSONObject(i).toString());
-            if(checkAcc.containsKey(username)){
-                JSONObject accDet = (JSONObject) checkAcc.get(username);
-                accDet.replace("Graduation Year", gradYear);
-
-                JSONObject account = new JSONObject();
-                account.put(username, accDet);
-
-                arr.remove(i);
-                arr.put(account);
-
-                JSONObject updated = new JSONObject();
-                updated.put("Users", arr);
-                try{
-                    FileWriter file = new FileWriter("accountDetails.json");
-                    file.write(updated.toString());
-                    file.flush();
-                    file.close();
-                }catch(IOException e){
-                    e.printStackTrace();
-                }
-                break;
-            }
-        }
-    }
-
-    public String getMajor(String username) throws IOException, ParseException {
-        String major = "";
-        Object o = new JSONParser().parse(new FileReader("accountDetails.json"));
-        JSONObject users = (JSONObject) o;
-
-        //copies the users into a JSONArray
-        JSONArray arr = new JSONArray(users.get("Users").toString());
-
-        for(int i = 0; i<arr.length(); i++){
-            JSONObject checkAcc = (JSONObject) new JSONParser().parse(arr.getJSONObject(i).toString());
-            if(checkAcc.containsKey(username)){
-                JSONObject accDet = (JSONObject) checkAcc.get(username);
-                major = accDet.get("Major").toString();
-                break;
-            }
+            major = rs.getString("major");
+        }catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
         return major;
     }
 
-    public void setMajor(String username, String major)throws IOException, ParseException{
-        Object o = new JSONParser().parse(new FileReader("accountDetails.json"));
-        JSONObject users = (JSONObject) o;
-
-        //copies the users into a JSONArray
-        JSONArray arr = new JSONArray(users.get("Users").toString());
-        for(int i = 0; i<arr.length(); i++){
-            JSONObject checkAcc = (JSONObject) new JSONParser().parse(arr.getJSONObject(i).toString());
-            if(checkAcc.containsKey(username)){
-                JSONObject accDet = (JSONObject) checkAcc.get(username);
-                accDet.replace("Major", major);
-
-                JSONObject account = new JSONObject();
-                account.put(username, accDet);
-
-                arr.remove(i);
-                arr.put(account);
-
-                JSONObject updated = new JSONObject();
-                updated.put("Users", arr);
-                try{
-                    FileWriter file = new FileWriter("accountDetails.json");
-                    file.write(updated.toString());
-                    file.flush();
-                    file.close();
-                }catch(IOException e){
-                    e.printStackTrace();
-                }
-                break;
-            }
-        }
-    }
-
-    public void storeSchedules(String username, ArrayList<Schedule> schedules)throws IOException, ParseException{
-        Object o = new JSONParser().parse(new FileReader("accountSchedules.json"));
-        JSONObject users = (JSONObject) o;
-
-        //copies the users into a JSONArray
-        JSONArray arr = new JSONArray(users.get("Users").toString());
-        for(int i = 0; i<arr.length(); i++){
-            JSONObject checkAcc = (JSONObject) new JSONParser().parse(arr.getJSONObject(i).toString());
-            if(checkAcc.containsKey(username)){
-                JSONObject accDet = (JSONObject) checkAcc.get(username);
-
-                accDet.replace("Schedules", schedules);
-
-                JSONObject account = new JSONObject();
-                account.put(username, accDet);
-                arr.remove(i);
-                arr.put(account);
-
-                JSONObject updated = new JSONObject();
-                updated.put("Users", arr);
-                try{
-                    FileWriter file = new FileWriter("accountSchedules.json");
-                    file.write(updated.toString());
-                    file.flush();
-                    file.close();
-                }catch(IOException e){
-                    e.printStackTrace();
-                }
-                break;
-            }
-        }
+    public static void main(String[] args) throws Exception {
+        Store app = new Store();
+//        app.register("user", "password");
+//        System.out.println(app.checkForUser("user9"));
+//        app.login("user3", "password2");
+//        app.setGradYear("user", 2023);
+//        app.setMajor("user", "COMM");
+//        app.getGradYear("user");
+        System.out.println(app.getMajor("user"));
     }
 
 
-    public ArrayList<Schedule> getSchedules(String username) throws ParseException, IOException {
-        ArrayList<Schedule> schedules = null;
-        Object o = new JSONParser().parse(new FileReader("accountSchedules.json"));
-        JSONObject users = (JSONObject) o;
 
-        //copies the users into a JSONArray
-        JSONArray arr = new JSONArray(users.get("Users").toString());
-
-        for(int i = 0; i<arr.length(); i++) {
-            JSONObject checkAcc = (JSONObject) new JSONParser().parse(arr.getJSONObject(i).toString());
-            if (checkAcc.containsKey(username)) {
-                JSONObject accDet = (JSONObject) checkAcc.get(username);
-                this.schedules = (ArrayList<Schedule>) accDet.get("Schedules");
-                return (ArrayList<Schedule>) accDet.get("Schedules");
-            }
-        }
-        return schedules;
-    }
-
-//    public static void consoleVersion() throws Exception {
-//        Scanner scan = new Scanner(System.in);
-//        boolean done = false;
-//
-//        while (!done){
-//            System.out.print("Please enter a command: ");
-//            String command = scan.nextLine();
-//            switch (command) {
-//                case "REGISTER" -> {
-//                    byte[] salt = generateSalt();
-//                    String saltString = Base64.getEncoder().encodeToString(salt);
-//                    System.out.print("Username: ");
-//                    String username = scan.nextLine();
-//                    System.out.print("Password: ");
-//                    String password = scan.nextLine();
-//                    storeAccount(username, saltString, encrypt(password, salt));
-//                }
-//                case "LOGIN" -> {
-//                    System.out.print("Username: ");
-//                    String username = scan.nextLine();
-//                    System.out.print("Password: ");
-//                    String password = scan.nextLine();
-//                    login(username, password);
-//                }
-//                case "EXIT" -> done = true;
-//                default -> System.out.println("Not a valid command!");
-//            }
-//        }
-//
-//
-//    }
-
-//    public static void main(String[] args) throws Exception {
-//        consoleVersion();
-//    }
 }
-

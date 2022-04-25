@@ -3,14 +3,11 @@
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.Iterator;
 import java.text.SimpleDateFormat;
 import java.util.Random;
@@ -78,13 +75,13 @@ public class Search {
      * @param searchParams Query specified by user
      * @return List of courses found by search
      */
-    public ArrayList<Course> getResults(SearchParameter searchParams) {
+    public ArrayList<ScheduleItem> getResults(SearchParameter searchParams) {
 
         //region __init__
 
         formatTime.setLenient(false);
         String input = searchParams.getValue();
-        ArrayList<Course> results = new ArrayList<>();
+        ArrayList<ScheduleItem> results = new ArrayList<>();
 
         boolean skipHeader = true;
         ArrayList<Row> matchingRows = new ArrayList<>();
@@ -309,7 +306,7 @@ public class Search {
             int capacity = Integer.valueOf(row.getCell(COL_CAPACITY).getStringCellValue());
             int numCredits = Integer.valueOf(row.getCell(COL_CREDITS).getStringCellValue());
 
-            results.add(new Course(code, shortTitle, longTitle, start, end, days, building, room,
+            results.add(new ScheduleItem(code, shortTitle, longTitle, start, end, days, building, room,
                     enrollment, capacity, numCredits));
         }
 
@@ -345,7 +342,7 @@ public class Search {
     /**
      * @return 1 completely random course
      */
-    public Course feelingLucky() {
+    public ScheduleItem feelingLucky() {
         Random rand = new Random();
         int randRow = rand.nextInt(1, sheet.getLastRowNum());
 
@@ -373,7 +370,7 @@ public class Search {
         int capacity = Integer.valueOf(row.getCell(COL_CAPACITY).getStringCellValue());
         int numCredits = Integer.valueOf(row.getCell(COL_CREDITS).getStringCellValue());
 
-        return new Course(code, shortTitle, longTitle, start, end, days, building, room,
+        return new ScheduleItem(code, shortTitle, longTitle, start, end, days, building, room,
                 enrollment, capacity, numCredits);
     }
 
@@ -386,7 +383,7 @@ public class Search {
      * @param user The user searching for courses
      * @return A list of courses
      */
-    public ArrayList<Course> searchByProfile(SessionUser user) {
+    public ArrayList<ScheduleItem> searchByProfile(SessionUser user) {
         short gradYear = user.profile.gradYear;
 
         //Allow someone whose major is undeclared to still use this feature
@@ -410,7 +407,7 @@ public class Search {
         String input = courseCode + courseNum;
         SearchParameter query = new SearchParameter(true, false,
                 false, false, false, false, input);
-        ArrayList<Course> courses = getResults(query);
+        ArrayList<ScheduleItem> cours = getResults(query);
 
         //Since highest course code for HUMAs is 302, change 4's to 3's
         if(courseNum.equals(" 4")) {
@@ -419,9 +416,9 @@ public class Search {
         input = "HUMA" + courseNum;
         query = new SearchParameter(true, false,
                 false, false, false, false, input);
-        courses.addAll(getResults(query));
+        cours.addAll(getResults(query));
 
-        return courses;
+        return cours;
     }
 
     //endregion

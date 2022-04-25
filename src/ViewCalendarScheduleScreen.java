@@ -1,8 +1,5 @@
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
-
-import static java.lang.constant.ConstantDescs.NULL;
 
 public class ViewCalendarScheduleScreen {
 //        public static void main(String[] args) {
@@ -24,30 +21,30 @@ public class ViewCalendarScheduleScreen {
 //            printCalendar(courses);
 //        }
 
-        public static void printCalendar(ArrayList<Course> courses) {
-            courses.sort(Comparator.comparing((Course a) -> a.beginTime));
+        public static void printCalendar(ArrayList<ScheduleItem> cours) {
+            cours.sort(Comparator.comparing((ScheduleItem a) -> a.beginTime));
 
-            ArrayList<Course> monday = new ArrayList<>();
-            ArrayList<Course> tuesday = new ArrayList<>();
-            ArrayList<Course> wednesday = new ArrayList<>();
-            ArrayList<Course> thursday = new ArrayList<>();
-            ArrayList<Course> friday = new ArrayList<>();
+            ArrayList<ScheduleItem> monday = new ArrayList<>();
+            ArrayList<ScheduleItem> tuesday = new ArrayList<>();
+            ArrayList<ScheduleItem> wednesday = new ArrayList<>();
+            ArrayList<ScheduleItem> thursday = new ArrayList<>();
+            ArrayList<ScheduleItem> friday = new ArrayList<>();
 
-            for (int i = 0; i < courses.size(); i++){
-                if (courses.get(i).meets.contains("M")){
-                    monday.add(courses.get(i));
+            for (int i = 0; i < cours.size(); i++){
+                if (cours.get(i).meets.contains("M")){
+                    monday.add(cours.get(i));
                 }
-                if (courses.get(i).meets.contains("T")){
-                    tuesday.add(courses.get(i));
+                if (cours.get(i).meets.contains("T")){
+                    tuesday.add(cours.get(i));
                 }
-                if (courses.get(i).meets.contains("W")){
-                    wednesday.add(courses.get(i));
+                if (cours.get(i).meets.contains("W")){
+                    wednesday.add(cours.get(i));
                 }
-                if (courses.get(i).meets.contains("R")){
-                    thursday.add(courses.get(i));
+                if (cours.get(i).meets.contains("R")){
+                    thursday.add(cours.get(i));
                 }
-                if (courses.get(i).meets.contains("F")){
-                    friday.add(courses.get(i));
+                if (cours.get(i).meets.contains("F")){
+                    friday.add(cours.get(i));
                 }
             }
 
@@ -199,7 +196,7 @@ public class ViewCalendarScheduleScreen {
             }
         }
 
-        public static String getLongest(ArrayList<Course> classesInDay){
+        public static String getLongest(ArrayList<ScheduleItem> classesInDay){
             String longest = "";
             for (int i = 0; i < classesInDay.size(); i++){
                 if(classesInDay.get(i).shortTitle.length() > longest.length()){
@@ -217,7 +214,7 @@ public class ViewCalendarScheduleScreen {
             return spaces.toString();
         }
 
-        public static ArrayList<String> input (ArrayList<Course> classesInDay, String longest){
+        public static ArrayList<String> input (ArrayList<ScheduleItem> classesInDay, String longest){
             ArrayList<String> input = new ArrayList<>();
 
             String eightInput, nineInput, tenInput, elevenInput, twelveInput, oneInput, twoInput, threeInput, fourInput;

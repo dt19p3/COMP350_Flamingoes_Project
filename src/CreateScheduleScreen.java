@@ -20,12 +20,12 @@ public class CreateScheduleScreen extends Screen {
             return new MySchedulesScreen(in,currentUser);
         }
         else if(inputWord.equalsIgnoreCase("Add")) {
-            return new AddCourseScreen(in, currentSchedule, new ArrayList<Course>(), currentUser);
+            return new AddCourseScreen(in, currentSchedule, new ArrayList<ScheduleItem>(), currentUser);
         }
         else if(inputWord.equalsIgnoreCase("Remove")){
             int index = in.nextInt();
-            if(index <= this.currentSchedule.courses.size() && index >= 0) {
-                this.currentSchedule.courses.remove(this.currentSchedule.courses.get(index-1));
+            if(index <= this.currentSchedule.cours.size() && index >= 0) {
+                this.currentSchedule.cours.remove(this.currentSchedule.cours.get(index-1));
                 return new CreateScheduleScreen(in,currentSchedule,currentUser);
             }
             return new ExitScreen(in,this);

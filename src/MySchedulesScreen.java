@@ -96,10 +96,10 @@ public class MySchedulesScreen extends Screen {
         }
         for(Schedule s : currentUser.schedules){
             System.out.print("\n\t\t\t\t\tSchedule name: " + s.getName());
-            if(s.courses.size() < 4){
+            if(s.cours.size() < 4){
                 System.out.print("\tNote: This schedule may be considered part time.");
             }
-            else if(s.courses.size() > 6){
+            else if(s.cours.size() > 6){
                 System.out.print("\tNote: This schedule may be considered overtime.");
             }
             System.out.println("\n\t\t\t\t\tCourses:");

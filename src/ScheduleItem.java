@@ -2,7 +2,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Formatter;
 
-public class Course {
+public class ScheduleItem {
     String code;
     String shortTitle; //name in class diagram
     String longTitle; //description in class diagram
@@ -17,26 +17,26 @@ public class Course {
     String professor;
     String department;//
     String semester;
-    ArrayList<Course> labs;
-    ArrayList<Course> prereqs;
+    ArrayList<ScheduleItem> labs;
+    ArrayList<ScheduleItem> prereqs;
     boolean conflicts;
-    Course conflictingCourse;
+    ScheduleItem conflictingScheduleItem;
 
     // this is a constructor that uses all fields in the database
-    public Course (String code,  String shortTitle, String longTitle, LocalTime beginTime, LocalTime endTime,
-                   String meets, String building, String room, int enrollment, int capacity, int numCredits){
+    public ScheduleItem(String code, String shortTitle, String longTitle, LocalTime beginTime, LocalTime endTime,
+                        String meets, String building, String room, int enrollment, int capacity, int numCredits){
         this(code,  shortTitle, longTitle,beginTime, endTime, meets, building, room, enrollment, capacity,
                 numCredits, "", "", "", new ArrayList<>(), new ArrayList<>());
         this.conflicts = false;
-        this.conflictingCourse = null;
+        this.conflictingScheduleItem = null;
     }
 
    // this is a constructor that includes the fields in our class diagram, expected to use this when reading
     // schedule courses saved to file back into memory
-   public Course (String code,  String shortTitle, String longTitle, LocalTime beginTime, LocalTime endTime,
-                  String meets, String building, String room, int enrollment, int capacity, int numCredits,
-                  String professor, String department, String semester, ArrayList<Course> labs,
-                  ArrayList<Course> prereqs) {
+   public ScheduleItem(String code, String shortTitle, String longTitle, LocalTime beginTime, LocalTime endTime,
+                       String meets, String building, String room, int enrollment, int capacity, int numCredits,
+                       String professor, String department, String semester, ArrayList<ScheduleItem> labs,
+                       ArrayList<ScheduleItem> prereqs) {
        this.code = code;
        this.shortTitle = shortTitle;
        this.longTitle = longTitle;
@@ -55,12 +55,12 @@ public class Course {
        this.prereqs = prereqs;
    }
 
-   public Course getConflictingCourse() {
-        return conflictingCourse;
+   public ScheduleItem getConflictingCourse() {
+        return conflictingScheduleItem;
    }
 
-   public void setConflictingCourse(Course course) {
-        this.conflictingCourse = course;
+   public void setConflictingCourse(ScheduleItem scheduleItem) {
+        this.conflictingScheduleItem = scheduleItem;
    }
 
    public boolean getConflicts(){
@@ -183,19 +183,19 @@ public class Course {
         this.semester = semester;
     }
 
-    public ArrayList<Course> getLabs() {
+    public ArrayList<ScheduleItem> getLabs() {
         return labs;
     }
 
-    public void setLabs(ArrayList<Course> labs) {
+    public void setLabs(ArrayList<ScheduleItem> labs) {
         this.labs = labs;
     }
 
-    public ArrayList<Course> getPrereqs() {
+    public ArrayList<ScheduleItem> getPrereqs() {
         return prereqs;
     }
 
-    public void setPrereqs(ArrayList<Course> prereqs) {
+    public void setPrereqs(ArrayList<ScheduleItem> prereqs) {
         this.prereqs = prereqs;
     }
 

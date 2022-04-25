@@ -1,12 +1,9 @@
-import org.json.simple.parser.ParseException;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Base64;
 
 public class SessionUser {
     //...attributes etc. This is just for testing
     public ArrayList<Schedule> schedules;
-    public ArrayList<Course> recentlyAdded;
+    public ArrayList<ScheduleItem> recentlyAdded;
     public Profile profile;
     public boolean isGuest;
     public SessionUser(boolean isGuest){

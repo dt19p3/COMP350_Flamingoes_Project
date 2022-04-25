@@ -2,47 +2,47 @@ import java.util.ArrayList;
 
 public class Schedule {
 
-    ArrayList<Course> courses;
+    ArrayList<ScheduleItem> cours;
     String name;
     public Schedule() {
         name = "Untitled";
-        courses = new ArrayList<>();
+        cours = new ArrayList<>();
     }
     public Schedule(String name){
         this.name = name;
-        courses = new ArrayList<>();
+        cours = new ArrayList<>();
     }
-    public void addCourse(Course course) { courses.add(course); }
+    public void addCourse(ScheduleItem scheduleItem) { cours.add(scheduleItem); }
 
-    public void removeCourse(Course course) {
-        if (courses.size() == 0) {
+    public void removeCourse(ScheduleItem scheduleItem) {
+        if (cours.size() == 0) {
             System.out.println("No courses to remove");
         }
         else {
-            courses.remove(course);
+            cours.remove(scheduleItem);
         }
     }
 
     public void listCourses() {
-        if (courses.size() == 0) {
+        if (cours.size() == 0) {
             System.out.println("\t\t\t\t\t\t-  No courses in this schedule");
         }
         else {
             //for (int i = 0; i < courses.size(); i++) {
             int i = 1;
-            for (Course c : courses) {
+            for (ScheduleItem c : cours) {
                 System.out.println("\t\t\t\t\t\t"+ i + ". " + c.getLongTitle());
                 i++;
             }
         }
     }
 
-    public ArrayList<Course> getCourses() {
-        return courses;
+    public ArrayList<ScheduleItem> getCourses() {
+        return cours;
     }
 
-    public void setCourses(ArrayList<Course> courses) {
-        this.courses = courses;
+    public void setCourses(ArrayList<ScheduleItem> cours) {
+        this.cours = cours;
     }
 
     public String getName() {

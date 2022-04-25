@@ -18,7 +18,7 @@ public class Store {
 
 
     private Connection connect() {
-        String url = "jdbc:sqlite:COMP350_Flamingoes_Project\\Database\\passwords.db";
+        String url = "jdbc:sqlite:Database\\Passwords.db";
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(url);
@@ -29,7 +29,7 @@ public class Store {
     }
 
     public static void createNewDatabase(String fileName) {
-        String url = "jdbc:sqlite:COMP350_Flamingoes_Project\\Database\\" + fileName;
+        String url = "jdbc:sqlite:Database\\" + fileName;
 
         try {
             Connection conn = DriverManager.getConnection(url);
@@ -111,6 +111,7 @@ public class Store {
             pstmt.setInt(4, 0);
             pstmt.setString(5, "Undeclared");
             pstmt.executeUpdate();
+            conn.close();
         } catch (SQLException e){
             System.out.println(e.getMessage());
         }
@@ -118,15 +119,19 @@ public class Store {
 
     public boolean checkForUser(String username){
         boolean found = false;
-        String sql = "SELECT * FROM users WHERE user = " + username;
+        String sql = "SELECT * FROM users WHERE user = ?";
+
         try{
             Connection conn = this.connect();
-            Statement stmt  = conn.createStatement();
-            ResultSet rs    = stmt.executeQuery(sql);
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            ResultSet rs    = pstmt.executeQuery();
 
             if(rs.next()) found = true;
+            conn.close();
 
         }catch(SQLException e){
+            System.out.println("fail");
             return false;
         }
         return found;
@@ -136,20 +141,24 @@ public class Store {
     public boolean login(String username, String password){
         boolean loggedIn = false;
         if(checkForUser(username)){
-            String sql = "SELECT * FROM users where user = " + username;
+            String sql = "SELECT * FROM users WHERE user = ?";
             try{
                 Connection conn = this.connect();
-                Statement stmt = conn.createStatement();
-                ResultSet rs = stmt.executeQuery(sql);
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, username);
+                ResultSet rs    = pstmt.executeQuery();
 
                 String userSalt = rs.getString("salt");
                 byte[] salt = Base64.getDecoder().decode(userSalt);
 
                 loggedIn = rs.getString("hashedPassword").equals(encrypt(password, salt));
+                conn.close();
             }catch (SQLException e){
-                System.out.println(e.getMessage());
+                System.out.println("uh oh");
+                //System.out.println(e.getMessage());
             } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println("uh oh2");
+                //e.printStackTrace();
             }
         }
         else{
@@ -168,6 +177,7 @@ public class Store {
             pstmt.setInt(1, gradYear);
             pstmt.setString(2, username);
             pstmt.executeUpdate();
+            conn.close();
         }catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -175,14 +185,16 @@ public class Store {
 
     public int getGradYear(String username){
         int year = 0;
-        String sql = "SELECT * FROM users WHERE user = " + username;
+        String sql = "SELECT * FROM users WHERE user = ?";
 
         try {
             Connection conn = this.connect();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            ResultSet rs    = pstmt.executeQuery();
 
             year = rs.getInt("gradYear");
+            conn.close();
         }catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -198,6 +210,7 @@ public class Store {
             pstmt.setString(1, major);
             pstmt.setString(2, username);
             pstmt.executeUpdate();
+            conn.close();
         }catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -205,23 +218,65 @@ public class Store {
 
     public String getMajor(String username){
         String major = null;
-        String sql = "SELECT * FROM users WHERE user = " + username;
+        String sql = "SELECT * FROM users WHERE user = ?";
 
         try {
             Connection conn = this.connect();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            ResultSet rs    = pstmt.executeQuery();
 
             major = rs.getString("major");
+            conn.close();
         }catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return major;
     }
 
-    public static void main(String[] args) throws Exception {
-        createNewDatabase("Passwords");
+    public static void addSchedule(String username, String schedName, Schedule schedule){
+        String url = "jdbc:sqlite:C:\\Users\\PrevitaliCA18\\IdeaProjects\\SETest\\Database\\Passwords.db";
+        String sql = "INSERT INTO schedules(user, scheduleName, schedule) VALUES(?,?,?)";
 
+        try {
+            Connection conn = DriverManager.getConnection(url);
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            pstmt.setString(2, schedName);
+            pstmt.setObject(3, schedule);
+            pstmt.executeUpdate();
+
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    public ArrayList<Schedule> getSchedules(String username){
+        String url = "jdbc:sqlite:C:\\Users\\PrevitaliCA18\\IdeaProjects\\SETest\\Database\\Passwords.db";
+        String sql = "SELECT * FROM schedules WHERE user = ?";
+        ArrayList<Schedule> userSched = new ArrayList<>();
+
+        try {
+            Connection conn = DriverManager.getConnection(url);
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            ResultSet rs    = pstmt.executeQuery();
+
+            while(rs.next()){
+                userSched.add((Schedule) rs.getObject(3));
+            }
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return userSched;
+    }
+
+
+
+//    public static void main(String[] args) throws Exception {
+//        createNewDatabase("Passwords");
+//
 //        Store app = new Store("user", "password");
 //        app.register("user", "password");
 //        System.out.println(app.checkForUser("user9"));
@@ -230,7 +285,7 @@ public class Store {
 //        app.setMajor("user", "COMM");
 //        app.getGradYear("user");
 //        System.out.println(app.getMajor("user"));
-    }
+//    }
 
 }
 

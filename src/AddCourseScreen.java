@@ -130,32 +130,31 @@ public class AddCourseScreen extends Screen {
                 int entryNo = 1;
                 boolean areConflicts = false;
                 this.checkConflicts(results);
-                boolean duplicateCourse = false;
                 ArrayList<Course> toRemove = new ArrayList<>();
 
-                for (int s = 0; s < currentSchedule.getCourses().size(); s++){
-                    for (int c = 0; c < results.size(); c++){
-                        if(currentSchedule.getCourses().get(s).code == results.get(c).code){
-                            toRemove.add(results.get(c));
-                        }
-                    }
-                }
-                results.removeAll(toRemove);
-                for (int s = 0; s < currentSchedule.getCourses().size(); s++) {
+//                for (int s = 0; s < currentSchedule.getCourses().size(); s++){
+//                    for (int c = 0; c < results.size(); c++){
+//                        if(currentSchedule.getCourses().get(s).code == results.get(c).code){
+//                            toRemove.add(results.get(c));
+//                        }
+//                    }
+//                }
+//                results.removeAll(toRemove);
+                //for (int s = 0; s < currentSchedule.getCourses().size(); s++) {
                     for (int c = 0; c < results.size(); c++) {
                         if (!results.get(c).getConflicts()) {
                             System.out.print("[" + entryNo + "] " + results.get(c) + "\n");
                         } else if (results.get(c).enrollment >= results.get(c).capacity) {
                             System.out.print("FULL " + results.get(c) + "\n");
-                        } else if (currentSchedule.getCourses().get(s).code == results.get(c).code){
-                            System.out.print("COURSE ALREADY IN SCHEDULE");
+//                        } else if (currentSchedule.getCourses().get(s).code == results.get(c).code){
+//                            System.out.print("COURSE ALREADY IN SCHEDULE");
                         } else {
                             System.out.print("[" + entryNo + "] " + results.get(c) + "    *\n");
                             areConflicts = true;
                         }
                         entryNo++;
                     }
-                }
+                //}
 
                 if(areConflicts) {
                     System.out.println("* - This course conflicts with a course in your schedule.");
@@ -178,18 +177,18 @@ public class AddCourseScreen extends Screen {
             this.checkConflicts(newCourses);
             boolean areConflicts = false;
             System.out.println(" #  Course Code        Course Name        Meets        Location   E/C");
-            for (int s = 0; s < currentSchedule.getCourses().size(); s++) {
+            //for (int s = 0; s < currentSchedule.getCourses().size(); s++) {
                 if (course.enrollment >= course.capacity) {
-                    System.out.print("COURSE IS FULL");
+                    System.out.print("COURSE IS FULL, SEARCH AGAIN");
                 } else if (!course.getConflicts()) {
                     System.out.print("[1] " + course + "\n");
-                } else if (currentSchedule.getCourses().get(s).code == course.code) {
-                    System.out.print("COURSE ALREADY IN SCHEDULE");
+//                } else if (currentSchedule.getCourses().get(s).code == course.code) {
+//                    System.out.print("COURSE ALREADY IN SCHEDULE");
                 } else {
                     System.out.print("[1] " + course + " *\n");
                     areConflicts = true;
                 }
-            }
+            //}
             if(areConflicts) {
                 System.out.println("* - This course conflicts with a course in your schedule.");
             }
@@ -208,14 +207,13 @@ public class AddCourseScreen extends Screen {
                 int entryNo = 1;
                 boolean areConflicts = false;
                 this.checkConflicts(newCourses);
-                for (int s = 0; s < currentSchedule.getCourses().size(); s++) {
+                //for (int s = 0; s < currentSchedule.getCourses().size(); s++) {
                     for (int c = 0; c < newCourses.size(); c++) {
                         if (newCourses.get(c).getConflicts()) {
                             System.out.print("[" + entryNo + "] " + newCourses.get(c) + "*\n");
-                        } else if (currentSchedule.getCourses().get(s).code == newCourses.get(c).code){
-                            System.out.print("COURSE ALREADY IN SCHEDULE");
-                        }
-                        else if (newCourses.get(c).enrollment >= newCourses.get(c).capacity) {
+//                        } else if (currentSchedule.getCourses().get(s).code == newCourses.get(c).code){
+//                            System.out.print("COURSE ALREADY IN SCHEDULE");
+                        } else if (newCourses.get(c).enrollment >= newCourses.get(c).capacity) {
                             System.out.print("FULL " + newCourses.get(c) + "\n");
                         } else {
                             System.out.print("[" + entryNo + "] " + newCourses.get(c) + "\n");
@@ -223,7 +221,7 @@ public class AddCourseScreen extends Screen {
                         }
                         entryNo++;
                     }
-                }
+                //}
                 if(areConflicts) {
                     System.out.println("* - This course conflicts with a course in your schedule.");
                 }

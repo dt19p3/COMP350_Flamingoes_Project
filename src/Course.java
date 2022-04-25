@@ -15,7 +15,7 @@ public class Course {
     int capacity;
     int numCredits;
     String professor;
-    String department;
+    String department;//
     String semester;
     ArrayList<Course> labs;
     ArrayList<Course> prereqs;

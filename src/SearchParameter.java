@@ -49,5 +49,5 @@ public class SearchParameter {
 
     public String getValue() {
         return value;
-    }
+    } //
 }

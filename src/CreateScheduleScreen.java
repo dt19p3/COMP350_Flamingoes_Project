@@ -16,6 +16,7 @@ public class CreateScheduleScreen extends Screen {
     public Screen input() {
         String inputWord = in.next();
         if(inputWord.equalsIgnoreCase("Complete")){
+            Store.addSchedule(currentUser.profile.username, currentSchedule.name, currentSchedule);
             return new MySchedulesScreen(in,currentUser);
         }
         else if(inputWord.equalsIgnoreCase("Add")) {

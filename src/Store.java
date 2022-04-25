@@ -133,7 +133,8 @@ public class Store {
 
     }
 
-    public void login(String username, String password){
+    public boolean login(String username, String password){
+        boolean loggedIn = false;
         if(checkForUser(username)){
             String sql = "SELECT * FROM users where user = " + username;
             try{
@@ -143,10 +144,8 @@ public class Store {
 
                 String userSalt = rs.getString("salt");
                 byte[] salt = Base64.getDecoder().decode(userSalt);
-                if(rs.getString("hashedPassword").equals(encrypt(password, salt)))
-                    System.out.println("Login Successful!");
-                else
-                    System.out.println("Login Failed");
+
+                loggedIn = rs.getString("hashedPassword").equals(encrypt(password, salt));
             }catch (SQLException e){
                 System.out.println(e.getMessage());
             } catch (Exception e) {
@@ -155,7 +154,9 @@ public class Store {
         }
         else{
             System.out.println("No User found");
+            return false;
         }
+        return loggedIn;
     }
 
     public void setGradYear(String username, int gradYear){

@@ -2,12 +2,23 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Base64;
 
+//@SuppressWarnings("ALL")
 public class Store {
+    //Constructor
+    public String username;
+    public String password;
+    public ArrayList<Schedule> schedules;
+    public Store(String username, String password){
+        this.username = username;
+        this.password = password;
+    }
+
 
     private Connection connect() {
-        String url = "jdbc:sqlite:C:\\Users\\PrevitaliCA18\\IdeaProjects\\SETest\\Database\\passwords.db";
+        String url = "jdbc:sqlite:COMP350_Flamingoes_Project\\Database\\passwords.db";
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(url);
@@ -18,7 +29,7 @@ public class Store {
     }
 
     public static void createNewDatabase(String fileName) {
-        String url = "jdbc:sqlite:C:\\Users\\PrevitaliCA18\\IdeaProjects\\SETest\\Database\\" + fileName;
+        String url = "jdbc:sqlite:COMP350_Flamingoes_Project\\Database\\" + fileName;
 
         try {
             Connection conn = DriverManager.getConnection(url);
@@ -34,18 +45,17 @@ public class Store {
 
     }
 
-    public static void createNewTable(){
-        String url = "jdbc:sqlite:SETest\\Database\\passwords.db";
-
+    public static void createUserTable(){
+        String url = "jdbc:sqlite:COMP350_Flamingoes_Project\\Database\\passwords.db";
 
         String sql = """
-                CREATE TABLE IF NOT EXISTS users (
-                 user text PRIMARY KEY,
-                 salt text,
-                 hashedPassword text,
-                 gradYear integer,
-                 major text
-                );""";
+            CREATE TABLE IF NOT EXISTS users (
+             user text PRIMARY KEY,
+             salt text,
+             hashedPassword text,
+             gradYear integer,
+             major text
+            );""";
         try{
             Connection conn = DriverManager.getConnection(url);
             Statement stmt = conn.createStatement();
@@ -209,16 +219,17 @@ public class Store {
     }
 
     public static void main(String[] args) throws Exception {
-        Store app = new Store();
+        createNewDatabase("Passwords");
+
+//        Store app = new Store("user", "password");
 //        app.register("user", "password");
 //        System.out.println(app.checkForUser("user9"));
 //        app.login("user3", "password2");
 //        app.setGradYear("user", 2023);
 //        app.setMajor("user", "COMM");
 //        app.getGradYear("user");
-        System.out.println(app.getMajor("user"));
+//        System.out.println(app.getMajor("user"));
     }
 
-
-
 }
+

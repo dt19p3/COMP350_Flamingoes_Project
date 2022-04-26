@@ -9,13 +9,11 @@ import java.util.Scanner;
 public class AddActivityScreen extends Screen {
 
     public Schedule currentSchedule;
-    public ArrayList<ScheduleItem> cours;
     public SessionUser currentUser;
 
-    public AddActivityScreen(Scanner scnr, Schedule currentSchedule, ArrayList<ScheduleItem> cours, SessionUser currentUser) {
+    public AddActivityScreen(Scanner scnr, Schedule currentSchedule, SessionUser currentUser) {
         super("Add activity", new String[]{"Add", "View", "Home"}, scnr);
         this.currentSchedule = currentSchedule;
-        this.cours = new ArrayList<>(cours);
         this.currentUser = currentUser;
     }
 
@@ -43,7 +41,7 @@ public class AddActivityScreen extends Screen {
             int endMinute = in.nextInt();
             LocalTime endTime = LocalTime.of(endHour, endMinute);
             System.out.println("What days does this activity meet?");
-            String meet = in.nextLine();
+            String meet = in.next();
 
             Activity activityToAdd = new Activity(activityName, "", beginTime, endTime, meet, "", "", 0, 0, 0);
 
@@ -104,26 +102,11 @@ public class AddActivityScreen extends Screen {
 
     @Override
     public void visualize() {
-        if (cours.size() != 0) {
+
             System.out.println(String.format(
                     "\t\t\t\t\t%72s\n" +
                             "\t\t\t\t\t.______________________________________________________________________.\n" +
-                            "\t\t\t\t\t| Add Course                                       from the Flamingoes |\n" +
-                            "\t\t\t\t\t|                                                                      |\n" +
-                            "\t\t\t\t\t| Enter one of the following:                                          |\n" +
-                            "\t\t\t\t\t|              - Add <index of course>                                 |\n" +
-                            "\t\t\t\t\t|              - View                                                  |\n" +
-                            "\t\t\t\t\t|              - I'm feeling lucky                                     |\n" +
-                            "\t\t\t\t\t|              - Search                                                |\n" +
-                            "\t\t\t\t\t|              - Search by profile                                     |\n" +
-                            "\t\t\t\t\t|              - Home                                                  |\n" +
-                            "\t\t\t\t\t|              - See recently added                                    |\n" +
-                            "\t\t\t\t\t|______________________________________________________________________|\n",currentSchedule.getName()));
-        } else {
-            System.out.println(String.format(
-                    "\t\t\t\t\t%72s\n" +
-                            "\t\t\t\t\t.______________________________________________________________________.\n" +
-                            "\t\t\t\t\t| Add Course                                       from the Flamingoes |\n" +
+                            "\t\t\t\t\t| Add Activity                                     from the Flamingoes |\n" +
                             "\t\t\t\t\t|                                                                      |\n" +
                             "\t\t\t\t\t| Enter one of the following:                                          |\n" +
                             "\t\t\t\t\t|              - Add                                 |\n" +
@@ -131,7 +114,7 @@ public class AddActivityScreen extends Screen {
                             "\t\t\t\t\t|              - Home                                                  |\n" +
                             "\t\t\t\t\t|______________________________________________________________________|\n",currentSchedule.getName()));
         }
-    }
+
 
     private static boolean isInteger(String str) {
         if (str == null) {

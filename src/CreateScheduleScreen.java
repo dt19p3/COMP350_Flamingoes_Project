@@ -7,7 +7,7 @@ public class CreateScheduleScreen extends Screen {
     public Schedule currentSchedule;
     public SessionUser currentUser;
     public CreateScheduleScreen(Scanner scnr,Schedule s,SessionUser currentUser) {
-        super("Create New Schedule", new String[] {"Complete","Add","Home","Remove"}, scnr);
+        super("Create New Schedule", new String[] {"Complete","Add","Home","Remove", "Activity"}, scnr);
         this.currentSchedule = s;
         this.currentUser = currentUser;
     }
@@ -21,6 +21,9 @@ public class CreateScheduleScreen extends Screen {
         }
         else if(inputWord.equalsIgnoreCase("Add")) {
             return new AddCourseScreen(in, currentSchedule, new ArrayList<ScheduleItem>(), currentUser);
+        }
+        else if(inputWord.equalsIgnoreCase("Activity")) {
+            return new AddActivityScreen(in, currentSchedule, currentUser);
         }
         else if(inputWord.equalsIgnoreCase("Remove")){
             int index = in.nextInt();
@@ -49,6 +52,7 @@ public class CreateScheduleScreen extends Screen {
                     "\t\t\t\t\t| Enter one of the following:                                          |\n" +
                     "\t\t\t\t\t|              - Add                                                   |\n" +
                     "\t\t\t\t\t|              - Home                                                  |\n" +
+                    "\t\t\t\t\t|              - Activity                                              |\n" +
                     "\t\t\t\t\t|                                                                      |\n" +
                     "\t\t\t\t\t|                                                                      |\n" +
                     "\t\t\t\t\t|                                                                      |\n" +

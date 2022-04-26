@@ -28,7 +28,13 @@ public class AddCourseScreen extends Screen {
             if (entry.length < 2) {
                 return new ExitScreen(in, this);
             }
-            int index = Integer.valueOf(entry[1]); //TODO error checking
+            String indexString = entry[1];
+            while((!isInteger(indexString) ||
+                    (Integer.parseInt(indexString) >= cours.size() || Integer.parseInt(indexString) < 1))) {
+                System.out.println("Please enter one of the integers listed above to add a course.");
+                indexString = in.nextLine();
+            }
+            int index = Integer.parseInt(indexString);
             ScheduleItem scheduleItemToAdd = cours.get(index-1);
             if(scheduleItemToAdd.getConflicts()) {
                 System.out.println("This course conflicts with another course in your schedule. Add anyway? (Y/N)");
@@ -310,5 +316,22 @@ public class AddCourseScreen extends Screen {
                             "\t\t\t\t\t|              - See recently added                                    |\n" +
                             "\t\t\t\t\t|______________________________________________________________________|\n",currentSchedule.getName()));
         }
+    }
+
+    private static boolean isInteger(String str) {
+        if (str == null) {
+            return false;
+        }
+        int length = str.length();
+        if (length == 0) {
+            return false;
+        }
+        for (int i = 0; i < length; i++) {
+            char c = str.charAt(i);
+            if (c < '0' || c > '9') {
+                return false;
+            }
+        }
+        return true;
     }
 }

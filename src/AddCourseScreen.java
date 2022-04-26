@@ -30,7 +30,7 @@ public class AddCourseScreen extends Screen {
             }
             String indexString = entry[1];
             while((!isInteger(indexString) ||
-                    (Integer.parseInt(indexString) >= cours.size() || Integer.parseInt(indexString) < 1))) {
+                    (Integer.parseInt(indexString) > cours.size() || Integer.parseInt(indexString) < 1))) {
                 System.out.println("Please enter one of the integers listed above to add a course.");
                 indexString = in.nextLine();
             }

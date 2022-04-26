@@ -6,31 +6,34 @@ import java.util.Scanner;
 public class EditProfileScreen extends Screen {
     public SessionUser currentUser;
 
-    public EditProfileScreen(Scanner scnr, SessionUser s) {
-        super("Edit profile", new String[] {"Major","Graduation year","Home"}, scnr);
+    public EditProfileScreen(Scanner scnr, SessionUser s, String input) {
+        super("Edit profile", new String[] {"Major","Graduation year","Home"}, scnr, input);
         this.currentUser = s;
     }
 
     @Override
     public Screen input() throws IOException, ParseException {
         String inputWord = in.next();
+        this.input = inputWord;
         if(inputWord.equalsIgnoreCase("major")){
             String nextWord = in.next();
+            this.input += nextWord;
             currentUser.profile.major = nextWord;
             currentUser.profile.storeMajor(nextWord);
-            return new ViewProfileScreen(in,currentUser);
+            return new ViewProfileScreen(in,currentUser,this.input);
         }
         else if(inputWord.equalsIgnoreCase("year")){
             String nextWord = in.next();
+            this.input += nextWord;
             currentUser.profile.gradYear = Short.valueOf(nextWord);
             currentUser.profile.storeGradYear(Short.valueOf(nextWord));
-            return new ViewProfileScreen(in,currentUser);
+            return new ViewProfileScreen(in,currentUser,this.input);
         }
         else if(inputWord.equalsIgnoreCase("home")){
-            return new HomeScreen(in,currentUser);
+            return new HomeScreen(in,currentUser,this.input);
         }
         else {
-            return new ExitScreen(in,this);
+            return new ExitScreen(in,this,this.input);
         }
     }
 

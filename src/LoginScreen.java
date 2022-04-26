@@ -8,32 +8,34 @@ import java.util.Scanner;
  */
 public class LoginScreen extends Screen {
 
-    public LoginScreen(Scanner scnr) {
-        super("Login", new String[] {"Login","Continue as guest","Sign-up"},scnr);
+    public LoginScreen(Scanner scnr, String input) {
+        super("Login", new String[] {"Login","Continue as guest","Sign-up"},scnr, input);
     }
 
     @Override
     public Screen input() throws Exception {
         String inputWord = in.next();
+        this.input = inputWord + "_____ _____";
         String inputLine = inputWord + in.nextLine();
+
         if(inputWord.equalsIgnoreCase("login")){
             SessionUser currentUser = new SessionUser(false);
             if(inputLine.split(" ").length < 3){
-                return new ExitScreen(in,this);
+                return new ExitScreen(in,this, this.input);
             }
             currentUser.login(new Profile(inputLine.split(" ")[1], inputLine.split(" ")[2]));
-            return new HomeScreen(in,currentUser);
+            return new HomeScreen(in,currentUser,this.input);
         }
         else if(inputWord.equalsIgnoreCase("sign-up")){
-            return new RegisterScreen(in);
+            return new RegisterScreen(in,this.input);
         }
         else if(inputLine.trim().equalsIgnoreCase("continue as guest")){
             //similar but with guest dummy
             SessionUser currentUser = new SessionUser(true);
 //            currentUser.login(new Profile("Guest",""));
-            return new HomeScreen(in,currentUser);        }
+            return new HomeScreen(in,currentUser,this.input);        }
         else {
-            return new ExitScreen(in,this);
+            return new ExitScreen(in,this,this.input);
         }
     }
 

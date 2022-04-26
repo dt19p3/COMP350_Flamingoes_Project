@@ -4,19 +4,20 @@ import java.util.Scanner;
  */
 public class HelpScreen extends Screen{
     public SessionUser currentUser;
-    public HelpScreen(Scanner scnr, SessionUser currentUser) {
-        super("Help", new String[] {"Home"}, scnr);
+    public HelpScreen(Scanner scnr, SessionUser currentUser, String input) {
+        super("Help", new String[] {"Home"}, scnr, input);
         this.currentUser = currentUser;
     }
 
     @Override
     public Screen input() {
         String inputWord = in.next();
+        this.input = inputWord;
         if(inputWord.equalsIgnoreCase("home")){
-            return new HomeScreen(in,currentUser);
+            return new HomeScreen(in,currentUser,this.input);
         }
         else {
-            return new ExitScreen(in,this);
+            return new ExitScreen(in,this,this.input);
         }
     }
 

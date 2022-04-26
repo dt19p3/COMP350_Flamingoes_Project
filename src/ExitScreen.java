@@ -5,8 +5,8 @@ import java.util.Scanner;
 public class ExitScreen extends Screen {
     private Screen lastScreen; //the previous screen
 
-    public ExitScreen(Scanner scnr, Screen lastScreen) {
-        super("Exit", new String[] {"Exit","Cancel"}, scnr);
+    public ExitScreen(Scanner scnr, Screen lastScreen, String input) {
+        super("Exit", new String[] {"Exit","Cancel"}, scnr, input);
         this.lastScreen = lastScreen;
     }
 
@@ -14,6 +14,7 @@ public class ExitScreen extends Screen {
     public Screen input() {
 
         String inputWord = in.next();
+        this.input = inputWord;
         if(inputWord.equalsIgnoreCase("Exit")){
             return null;
         }

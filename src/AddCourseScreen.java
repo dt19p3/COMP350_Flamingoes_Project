@@ -10,8 +10,8 @@ public class AddCourseScreen extends Screen {
     public ArrayList<ScheduleItem> cours;
     public SessionUser currentUser;
 
-    public AddCourseScreen(Scanner scnr, Schedule currentSchedule, ArrayList<ScheduleItem> cours, SessionUser currentUser) {
-        super("Add course", new String[]{"Add", "View", "Search", "I'm feeling lucky", "Search by profile", "Home", "See recently added"}, scnr);
+    public AddCourseScreen(Scanner scnr, Schedule currentSchedule, ArrayList<ScheduleItem> cours, SessionUser currentUser, String input) {
+        super("Add course", new String[]{"Add", "View", "Search", "I'm feeling lucky", "Search by profile", "Home", "See recently added"}, scnr, input);
         this.currentSchedule = currentSchedule;
         this.cours = new ArrayList<>(cours);
         this.currentUser = currentUser;
@@ -21,12 +21,14 @@ public class AddCourseScreen extends Screen {
     public Screen input() {
         String inputWord = in.next();
         String inputLine = inputWord + in.nextLine();
+        this.input = inputLine;
+
         if (inputWord.equalsIgnoreCase("view")) {
-            return new CreateScheduleScreen(in, currentSchedule, currentUser);
+            return new CreateScheduleScreen(in, currentSchedule, currentUser,this.input);
         } else if (inputWord.equalsIgnoreCase("add") && cours.size() != 0) {
             String[] entry = inputLine.split(" ");
             if (entry.length < 2) {
-                return new ExitScreen(in, this);
+                return new ExitScreen(in, this,this.input);
             }
             String indexString = entry[1];
             while((!isInteger(indexString) ||
@@ -43,14 +45,14 @@ public class AddCourseScreen extends Screen {
                     currentSchedule.removeCourse(scheduleItemToAdd.conflictingScheduleItem);
                     currentSchedule.addCourse(scheduleItemToAdd);
                 }
-                return new CreateScheduleScreen(in, currentSchedule, currentUser);
+                return new CreateScheduleScreen(in, currentSchedule, currentUser,this.input);
             }
             currentSchedule.addCourse(scheduleItemToAdd);
             if(currentUser.recentlyAdded.size() > 5) {
                 currentUser.recentlyAdded.remove(currentUser.recentlyAdded.get(currentUser.recentlyAdded.size() - 1));
             }
             currentUser.recentlyAdded.add(scheduleItemToAdd);
-            return new CreateScheduleScreen(in, currentSchedule, currentUser);
+            return new CreateScheduleScreen(in, currentSchedule, currentUser,this.input);
         }
 
         //region Filter
@@ -121,7 +123,7 @@ public class AddCourseScreen extends Screen {
             //Make sure user actually entered a query
             if(query.getFlags().isEmpty()) {
                 System.out.println("You must search using at least one filter.");
-                return new AddCourseScreen(in, currentSchedule, new ArrayList<>(), currentUser);
+                return new AddCourseScreen(in, currentSchedule, new ArrayList<>(), currentUser,this.input);
             }
 
             ArrayList<ScheduleItem> results = search.getResults(query);
@@ -166,7 +168,7 @@ public class AddCourseScreen extends Screen {
 
             //endregion
 
-            return new AddCourseScreen(in, currentSchedule, results, currentUser);
+            return new AddCourseScreen(in, currentSchedule, results, currentUser,this.input);
         }
 
         //endregion
@@ -196,7 +198,7 @@ public class AddCourseScreen extends Screen {
                 System.out.println("* - This course conflicts with a course in your schedule.");
             }
 
-            return new AddCourseScreen(in, currentSchedule, newCours, currentUser);
+            return new AddCourseScreen(in, currentSchedule, newCours, currentUser,this.input);
         }
         else if (inputLine.trim().equalsIgnoreCase("Search by profile")) {
             Search search = new Search();
@@ -229,9 +231,9 @@ public class AddCourseScreen extends Screen {
                     System.out.println("* - This course conflicts with a course in your schedule.");
                 }
             }
-            return new AddCourseScreen(in, currentSchedule, newCours, currentUser);
+            return new AddCourseScreen(in, currentSchedule, newCours, currentUser,this.input);
         } else if (inputWord.equalsIgnoreCase("home")) {
-            return new HomeScreen(in, currentUser);
+            return new HomeScreen(in, currentUser,this.input);
         } else if(inputLine.trim().equalsIgnoreCase("See recently added")){
             if (currentUser.recentlyAdded.isEmpty()) {
                 System.out.println("No courses were added recently.");
@@ -243,9 +245,9 @@ public class AddCourseScreen extends Screen {
                     entryNo++;
                 }
             }
-            return new AddCourseScreen(in, currentSchedule, currentUser.recentlyAdded, currentUser);
+            return new AddCourseScreen(in, currentSchedule, currentUser.recentlyAdded, currentUser,this.input);
         } else {
-            return new ExitScreen(in, this);
+            return new ExitScreen(in, this,this.input);
         }
     }
 
@@ -307,7 +309,6 @@ public class AddCourseScreen extends Screen {
                             "\t\t\t\t\t| Add Course                                       from the Flamingoes |\n" +
                             "\t\t\t\t\t|                                                                      |\n" +
                             "\t\t\t\t\t| Enter one of the following:                                          |\n" +
-                            "\t\t\t\t\t|              - Add <index of course>                                 |\n" +
                             "\t\t\t\t\t|              - View                                                  |\n" +
                             "\t\t\t\t\t|              - I'm feeling lucky                                     |\n" +
                             "\t\t\t\t\t|              - Search                                                |\n" +

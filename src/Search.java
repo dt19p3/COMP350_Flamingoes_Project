@@ -102,7 +102,7 @@ public class Search {
 
         if(searchParams.getFlags().contains(SearchParameter.Flag.CODE)) {
             //Assumes that user input is being passed in as a new-line delineated string
-            String code = input.split("\n")[nextInput];
+            String code = input.split("\n")[nextInput].toUpperCase();
             nextInput++;
 
             //Iterate through ArrayList using iterator so we can remove from it

@@ -446,6 +446,7 @@ public class AddCourseScreen extends Screen {
                             "\t\t\t\t\t|              - Search by profile                                     |\n" +
                             "\t\t\t\t\t|              - Home                                                  |\n" +
                             "\t\t\t\t\t|              - See recently added                                    |\n" +
+                            "\t\t\t\t\t|              - See suggestions                                       |\n" +
                             "\t\t\t\t\t|______________________________________________________________________|\n",currentSchedule.getName()));
         }
     }

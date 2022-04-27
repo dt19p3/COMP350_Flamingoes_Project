@@ -18,6 +18,9 @@ public class CreateScheduleScreen extends Screen {
         this.input = inputWord;
         if(inputWord.equalsIgnoreCase("Complete")){
             Store.addSchedule(currentUser.profile.username, currentSchedule.name, currentSchedule);
+            SimilarityMap sm = new SimilarityMap("simmap.txt");
+            sm.processShedule(currentSchedule);
+            sm.flush();
             return new MySchedulesScreen(in,currentUser,this.input);
         }
         else if(inputWord.equalsIgnoreCase("Add")) {

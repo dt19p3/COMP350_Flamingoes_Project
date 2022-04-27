@@ -11,7 +11,7 @@ public class AddCourseScreen extends Screen {
     public SessionUser currentUser;
 
     public AddCourseScreen(Scanner scnr, Schedule currentSchedule, ArrayList<ScheduleItem> cours, SessionUser currentUser, String input) {
-        super("Add course", new String[]{"Add", "View", "Search", "I'm feeling lucky", "Search by profile", "Home", "See recently added"}, scnr, input);
+        super("Add course", new String[]{"Add", "View", "Search", "I'm feeling lucky", "Search by profile", "Home", "See recently added", "See suggestions"}, scnr, input);
         this.currentSchedule = currentSchedule;
         this.cours = new ArrayList<>(cours);
         this.currentUser = currentUser;
@@ -234,7 +234,7 @@ public class AddCourseScreen extends Screen {
             return new AddCourseScreen(in, currentSchedule, newCours, currentUser,this.input);
         } else if (inputWord.equalsIgnoreCase("home")) {
             return new HomeScreen(in, currentUser,this.input);
-        } else if(inputLine.trim().equalsIgnoreCase("See recently added")){
+        } else if(inputLine.trim().equalsIgnoreCase("See recently added")) {
             if (currentUser.recentlyAdded.isEmpty()) {
                 System.out.println("No courses were added recently.");
             } else {
@@ -245,7 +245,11 @@ public class AddCourseScreen extends Screen {
                     entryNo++;
                 }
             }
-            return new AddCourseScreen(in, currentSchedule, currentUser.recentlyAdded, currentUser,this.input);
+            return new AddCourseScreen(in, currentSchedule, currentUser.recentlyAdded, currentUser, this.input);
+        } else if(inputLine.trim().equalsIgnoreCase("See suggestions")) {
+            SimilarityMap sm = new SimilarityMap("simmap.txt");
+            System.out.println(sm.getSimilarCoursesStrings(currentSchedule));
+            return this;
         } else {
             return new ExitScreen(in, this,this.input);
         }

@@ -20,3 +20,64 @@ deletes2
 exit
 exit
 exit
+
+Beginning session @ 1651084738113: 
+login_____ _____
+logout
+xdfjighxidfughxfg_____ _____
+xdfjighxidfughxfg_____ _____
+bugs_____ _____
+
+Beginning session @ 1651092874403: 
+CONTINUE_____ _____
+Create schedule NEW_SCHED
+Add
+Search
+Add 1
+Add
+See suggestions
+Search
+Search
+Add 1
+Remove
+Add
+Search
+Add 1
+Add
+Search
+Add 1
+Add
+Search
+Add 4
+Complete
+AddCHEM_SCHED
+Add
+Search
+Add 1
+Add
+Search
+Search
+Add 1
+Add
+Search
+Add 1
+Complete
+Home
+My schedules
+DeleteNEW_SCHED
+Home
+My schedules
+DeleteCHEM_SCHED
+Addn1
+Home
+Add n2
+Add n2
+Create schedule n2
+Home
+My schedules
+Addn1
+Add
+View
+Home
+My schedules
+Exit

@@ -4,15 +4,21 @@ public class Schedule {
 
     ArrayList<ScheduleItem> cours;
     String name;
+    int numCredits;
     public Schedule() {
         name = "Untitled";
         cours = new ArrayList<>();
+        numCredits = 0;
     }
     public Schedule(String name){
         this.name = name;
         cours = new ArrayList<>();
+        numCredits = 0;
     }
-    public void addCourse(ScheduleItem scheduleItem) { cours.add(scheduleItem); }
+    public void addCourse(ScheduleItem scheduleItem) {
+        cours.add(scheduleItem);
+        numCredits += scheduleItem.numCredits;
+    }
 
     public void removeCourse(ScheduleItem scheduleItem) {
         if (cours.size() == 0) {

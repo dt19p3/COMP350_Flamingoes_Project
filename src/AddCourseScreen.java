@@ -250,7 +250,7 @@ public class AddCourseScreen extends Screen {
 //                }
 //            } else {
                 if (newCours.isEmpty()){
-                    System.out.print("COURSE IS ALREADY IN SCHEDULE");
+                    System.out.print("COURSE IS ALREADY IN SCHEDULE\n");
                 } else if (scheduleItem.enrollment >= scheduleItem.capacity) {
                     System.out.print("COURSE IS FULL, SEARCH AGAIN\n");
                 } else if (!scheduleItem.getConflicts()) {

@@ -19,23 +19,24 @@ public class Scratch {
 
 
         Schedule s = new Schedule();
-        s.addCourse(new ScheduleItem("COMP 200"));
-        s.addCourse(new ScheduleItem("COMP 201"));
-        s.addCourse(new ScheduleItem("COMP 345"));
-        s.addCourse(new ScheduleItem("COMP 302"));
+        s.addCourse(new ScheduleItem("CHEM 112"));
+        s.addCourse(new ScheduleItem("CHEM 114"));
+        s.addCourse(new ScheduleItem("BIOL 102"));
+        s.addCourse(new ScheduleItem("MATH 162"));
+        s.addCourse(new ScheduleItem("HUMA 102"));
         sm.processShedule(s);
-
-        Schedule s2 = new Schedule();
-        s2.addCourse(new ScheduleItem("COMP 200"));
-        s2.addCourse(new ScheduleItem("COMP 345"));
-        s2.addCourse(new ScheduleItem("COMP 302"));
-
-        for(String key : sm.map.keySet()){
-            for(String skey : sm.map.get(key).keySet()){
-                System.out.println(key + " " + skey + " " + sm.map.get(key).get(skey));
-            }
-        }
-        System.out.println(sm.getSimilarCoursesStrings(s2));
+//
+//        Schedule s2 = new Schedule();
+//        s2.addCourse(new ScheduleItem("COMP 200"));
+//        s2.addCourse(new ScheduleItem("COMP 345"));
+//        s2.addCourse(new ScheduleItem("COMP 302"));
+//
+//        for(String key : sm.map.keySet()){
+//            for(String skey : sm.map.get(key).keySet()){
+//                System.out.println(key + " " + skey + " " + sm.map.get(key).get(skey));
+//            }
+//        }
+//        System.out.println(sm.getSimilarCoursesStrings(s2));
         sm.flush();
     }
 }

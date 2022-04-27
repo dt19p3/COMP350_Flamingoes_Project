@@ -74,7 +74,7 @@ public class SimilarityMap {
         }
         int[] max_vals = {-1,-1,-1,-1,-1};
         String[] max_names = {"","","","",""};
-
+        boolean found = false;
         for(String key : merged.keySet()){
             int maxdex = 4;
             int curval = merged.get(key);
@@ -82,6 +82,7 @@ public class SimilarityMap {
                 max_vals[maxdex] = curval;
                 max_names[maxdex] = key;
                 maxdex--;
+                found = true;
             }
         }
         StringBuilder out = new StringBuilder();
@@ -95,7 +96,8 @@ public class SimilarityMap {
             }
             prevCode = max_names[i];
         }
-        return out.toString();
+        if (found) return out.toString();
+        else return "No suggestions yet...\n";
     }
 
     public void flush(){

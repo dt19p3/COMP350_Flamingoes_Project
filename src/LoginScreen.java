@@ -15,10 +15,11 @@ public class LoginScreen extends Screen {
     @Override
     public Screen input() throws Exception {
         String inputWord = in.next();
-        this.input = inputWord + "_____ _____";
         String inputLine = inputWord + in.nextLine();
+        this.input = inputLine;
 
         if(inputWord.equalsIgnoreCase("login")){
+            this.input = inputWord + "_____ _____";
             SessionUser currentUser = new SessionUser(false);
             if(inputLine.split(" ").length < 3){
                 return new ExitScreen(in,this, this.input);

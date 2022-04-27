@@ -17,9 +17,7 @@ public class MySchedulesScreen extends Screen {
             String scheduleName = in.next();
             this.input += scheduleName;
             Schedule scheduleWithThatName = new Schedule(scheduleName);
-            if(!currentUser.isGuest) {
-                currentUser.schedules.add(scheduleWithThatName);
-            }
+            currentUser.schedules.add(scheduleWithThatName);
             return new CreateScheduleScreen(in,scheduleWithThatName,currentUser,this.input);
         }
         else if(inputWord.equalsIgnoreCase("Calendar")){
@@ -133,12 +131,12 @@ public class MySchedulesScreen extends Screen {
             return;
         }
         for(Schedule s : currentUser.schedules){
-            System.out.print("\n\t\t\t\t\tSchedule name: " + s.getName());
-            if(s.cours.size() < 4){
-                System.out.print("\tNote: This schedule may be considered part time.");
+            System.out.print("\n\t\t\t\t\tSchedule name: " + s.getName() + "\t Credit hours:" + s.numCredits);
+            if(s.numCredits < 12){
+                System.out.print("\t\tThis schedule is part time.");
             }
-            else if(s.cours.size() > 6){
-                System.out.print("\tNote: This schedule may be considered overtime.");
+            else if(s.numCredits > 17){
+                System.out.print("\t\tThis schedule is overtime.");
             }
             System.out.println("\n\t\t\t\t\tCourses:");
             s.listCourses();

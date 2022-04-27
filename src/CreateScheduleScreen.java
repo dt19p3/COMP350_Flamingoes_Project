@@ -17,7 +17,9 @@ public class CreateScheduleScreen extends Screen {
         String inputWord = in.next();
         this.input = inputWord;
         if(inputWord.equalsIgnoreCase("Complete")){
-            Store.addSchedule(currentUser.profile.username, currentSchedule.name, currentSchedule);
+            if(!currentUser.isGuest) {
+                Store.addSchedule(currentUser.profile.username, currentSchedule.name, currentSchedule);
+            }
             SimilarityMap sm = new SimilarityMap("simmap.txt");
             sm.processShedule(currentSchedule);
             sm.flush();

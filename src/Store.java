@@ -1,8 +1,13 @@
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.sql.*;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 
 //@SuppressWarnings("ALL")
@@ -235,28 +240,46 @@ public class Store {
     }
 
     public static void addSchedule(String username, String schedName, Schedule schedule){
-        String url = "jdbc:sqlite:C:\\Users\\PrevitaliCA18\\IdeaProjects\\SETest\\Database\\Passwords.db";
-        String sql = "INSERT INTO schedules(user, scheduleName, schedule) VALUES(?,?,?)";
+        String url = "jdbc:sqlite:Database\\Passwords.db";
+//        String sql = "INSERT INTO schedules(user, scheduleName, schedule) VALUES(?,?,?)";
+        String sql = "INSERT INTO schedules(user, scheduleName, code, shortTitle, longTitle, beginTime, endTime," +
+                " meets, building, room, enrollment, capacity, numCredits, professor, department, semester) " +
+                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        ArrayList<ScheduleItem> c = schedule.cours;
 
-        try {
-            Connection conn = DriverManager.getConnection(url);
-            PreparedStatement pstmt = conn.prepareStatement(sql);
-            pstmt.setString(1, username);
-            pstmt.setString(2, schedName);
-            pstmt.setObject(3, schedule);
-            pstmt.executeUpdate();
-
-        }catch (SQLException e){
-            System.out.println(e.getMessage());
+        for(ScheduleItem s: c) {
+            try {
+                Connection conn = DriverManager.getConnection(url);
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, username);
+                pstmt.setString(2, schedName);
+                pstmt.setString(3, s.code);
+                pstmt.setString(4, s.shortTitle);
+                pstmt.setString(5, s.longTitle);
+                pstmt.setTime(6, Time.valueOf(s.beginTime));
+                pstmt.setTime(7, Time.valueOf(s.endTime));
+                pstmt.setString(8, s.meets);
+                pstmt.setString(9, s.building);
+                pstmt.setString(10, s.room);
+                pstmt.setInt(11, s.enrollment);
+                pstmt.setInt(12,s.capacity);
+                pstmt.setInt(13,s.numCredits);
+                pstmt.setString(14, s.professor);
+                pstmt.setString(15, s.department);
+                pstmt.setString(16, s.semester);
+                pstmt.executeUpdate();
+                conn.close();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
         }
-
     }
 
     public ArrayList<Schedule> getSchedules(String username){
-        String url = "jdbc:sqlite:C:\\Users\\PrevitaliCA18\\IdeaProjects\\SETest\\Database\\Passwords.db";
+        String url = "jdbc:sqlite:Database\\Passwords.db";
         String sql = "SELECT * FROM schedules WHERE user = ?";
         ArrayList<Schedule> userSched = new ArrayList<>();
-
+        ArrayList<String> schedNames = new ArrayList<>();
         try {
             Connection conn = DriverManager.getConnection(url);
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -264,12 +287,61 @@ public class Store {
             ResultSet rs    = pstmt.executeQuery();
 
             while(rs.next()){
-                userSched.add((Schedule) rs.getObject(3));
+                if(!schedNames.contains(rs.getString(3))){
+                    schedNames.add(rs.getString(3));
+                }
+            }
+
+            rs.close();
+            conn.close();
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
+
+        try {
+            for(String schedN: schedNames) {
+                Connection conn = DriverManager.getConnection(url);
+                PreparedStatement pstmt = conn.prepareStatement(sql);
+                pstmt.setString(1, username);
+                ResultSet rs = pstmt.executeQuery();
+
+                Schedule sched = new Schedule();
+                while(rs.next()) {
+                    if (rs.getString(3).equals(schedN)) {
+                        ScheduleItem c = new ScheduleItem(
+                                rs.getString(4), rs.getString(5), rs.getString(6),
+                                rs.getTime(7).toLocalTime(), rs.getTime(8).toLocalTime(),
+                                rs.getString(9), rs.getString(10), rs.getString(11),
+                                rs.getInt(12), rs.getInt(13), rs.getInt(14)
+                        );
+                        sched.addCourse(c);
+                    }
+                }
+                sched.setName(schedN);
+                userSched.add(sched);
+                rs.close();
+                conn.close();
             }
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }
         return userSched;
+    }
+
+    public static void removeScheduleFromDatabase(String username, String schedName){
+        String url = "jdbc:sqlite:Database\\Passwords.db";
+        String sql = "DELETE FROM schedules WHERE user = ? AND scheduleName = ?";
+
+        try{
+            Connection conn = DriverManager.getConnection(url);
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            pstmt.setString(2,schedName);
+            pstmt.executeUpdate();
+            conn.close();
+        }catch (SQLException e){
+            System.out.println(e.getMessage());
+        }
     }
 
 

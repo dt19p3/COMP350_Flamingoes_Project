@@ -19,7 +19,7 @@ public class SessionUser {
         if(s.login(s.username,s.password)){
             profile.gradYear = (short) s.getGradYear(profile.username);
             profile.major = s.getMajor(profile.username);
-//            this.schedules = s.getSchedules(s.username);
+            this.schedules = s.getSchedules(s.username);
         }
         if(this.schedules == null){
             this.schedules = new ArrayList<>();

@@ -46,6 +46,7 @@ public class MySchedulesScreen extends Screen {
                 if(s.getName().equalsIgnoreCase(scheduleName)) {
                     removed = true;
                     toRemove = s;
+                    Store.removeScheduleFromDatabase(currentUser.profile.username, s.name);
                     break;
                 }
             }
@@ -68,6 +69,7 @@ public class MySchedulesScreen extends Screen {
                 if(s.getName().equalsIgnoreCase(scheduleName)) {
                     found = true;
                     toEdit = s;
+                    Store.removeScheduleFromDatabase(currentUser.profile.username, s.name);
                     break;
                 }
             }

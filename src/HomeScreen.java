@@ -29,6 +29,10 @@ public class HomeScreen extends Screen {
         else if(inputLine.trim().equalsIgnoreCase("help")){
             return new HelpScreen(in,currentUser,this.input);
         }
+        else if((inputLine.trim().equalsIgnoreCase("log out") || (inputLine.trim().equalsIgnoreCase("logout")))
+                && !currentUser.isGuest){
+            return new LoginScreen(in, this.input);
+        }
         else {
             return new ExitScreen(in,this,this.input);
 
@@ -48,6 +52,7 @@ public class HomeScreen extends Screen {
                             "\t\t\t\t\t|              - My schedules                                          |\n" +
                             "\t\t\t\t\t|              - My profile                                            |\n" +
                             "\t\t\t\t\t|              - Help                                                  |\n" +
+                            "\t\t\t\t\t|              - Logout                                                |\n" +
                             "\t\t\t\t\t|                                                                      |\n" +
                             "\t\t\t\t\t|______________________________________________________________________|\n", currentUser.profile.username));
         } else {

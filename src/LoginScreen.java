@@ -24,7 +24,10 @@ public class LoginScreen extends Screen {
                 return new ExitScreen(in,this, this.input);
             }
             currentUser.login(new Profile(inputLine.split(" ")[1], inputLine.split(" ")[2]));
-            return new HomeScreen(in,currentUser,this.input);
+            if(currentUser.accountExists) {
+                return new HomeScreen(in, currentUser, this.input);
+            }
+            else return new LoginScreen(in, this.input);
         }
         else if(inputWord.equalsIgnoreCase("sign-up")){
             return new RegisterScreen(in,this.input);

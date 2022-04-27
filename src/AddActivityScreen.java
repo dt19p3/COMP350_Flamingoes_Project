@@ -11,8 +11,8 @@ public class AddActivityScreen extends Screen {
     public Schedule currentSchedule;
     public SessionUser currentUser;
 
-    public AddActivityScreen(Scanner scnr, Schedule currentSchedule, SessionUser currentUser) {
-        super("Add activity", new String[]{"Add", "View", "Home"}, scnr);
+    public AddActivityScreen(Scanner scnr, Schedule currentSchedule, SessionUser currentUser, String input) {
+        super("Add activity", new String[]{"Add", "View", "Home"}, scnr, "");
         this.currentSchedule = currentSchedule;
         this.currentUser = currentUser;
     }
@@ -21,8 +21,10 @@ public class AddActivityScreen extends Screen {
     public Screen input() {
         String inputWord = in.next();
         String inputLine = inputWord + in.nextLine();
+        this.input = inputLine;
+
         if (inputWord.equalsIgnoreCase("view")) {
-            return new CreateScheduleScreen(in, currentSchedule, currentUser);
+            return new CreateScheduleScreen(in, currentSchedule, currentUser,this.input);
         }
         else if (inputWord.equalsIgnoreCase("add")) {
             System.out.println("Please enter the name of your activity.");
@@ -53,16 +55,16 @@ public class AddActivityScreen extends Screen {
                     currentSchedule.removeCourse(activityToAdd.conflictingScheduleItem);
                     currentSchedule.addCourse(activityToAdd);
                 }
-                return new CreateScheduleScreen(in, currentSchedule, currentUser);
+                return new CreateScheduleScreen(in, currentSchedule, currentUser,this.input);
             }
             currentSchedule.addCourse(activityToAdd);
-            return new CreateScheduleScreen(in, currentSchedule, currentUser);
+            return new CreateScheduleScreen(in, currentSchedule, currentUser,this.input);
         }
 
             else if (inputWord.equalsIgnoreCase("home")) {
-                return new HomeScreen(in, currentUser);
+                return new HomeScreen(in, currentUser,this.input);
             } else {
-            return new ExitScreen(in, this);
+            return new ExitScreen(in, this,this.input);
         }
     }
 

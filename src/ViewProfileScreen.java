@@ -2,21 +2,22 @@ import java.util.Scanner;
 
 public class ViewProfileScreen extends Screen {
     public SessionUser currentUser;
-    public ViewProfileScreen(Scanner scnr, SessionUser currentUser) {
-        super("My Profile", new String[] {"Edit","Home"}, scnr);
+    public ViewProfileScreen(Scanner scnr, SessionUser currentUser, String input) {
+        super("My Profile", new String[] {"Edit","Home"}, scnr, input);
         this.currentUser = currentUser;
     }
 
     @Override
     public Screen input() {
         String inputWord = in.next();
+        this.input = inputWord;
         if(inputWord.equalsIgnoreCase("home")){
-            return new HomeScreen(in,currentUser);
+            return new HomeScreen(in,currentUser,this.input);
         }
         else if(inputWord.equalsIgnoreCase("edit")){
-            return new EditProfileScreen(in,currentUser);
+            return new EditProfileScreen(in,currentUser,this.input);
         } else {
-            return new ExitScreen(in,this);
+            return new ExitScreen(in,this,this.input);
         }
     }
 

@@ -4,22 +4,25 @@ import java.util.Scanner;
  */
 public class MySchedulesScreen extends Screen {
     public SessionUser currentUser;
-    public MySchedulesScreen(Scanner scnr,SessionUser s) {
-        super("My Schedules", new String[] {"Add", "Delete","Edit","Home","Calendar"}, scnr);
+    public MySchedulesScreen(Scanner scnr,SessionUser s, String input) {
+        super("My Schedules", new String[] {"Add", "Delete","Edit","Home","Calendar"}, scnr, input);
         this.currentUser = s;
     }
 
     @Override
     public Screen input() {
         String inputWord = in.next();
+        this.input = inputWord;
         if(inputWord.equalsIgnoreCase("Add")){
             String scheduleName = in.next();
+            this.input += scheduleName;
             Schedule scheduleWithThatName = new Schedule(scheduleName);
             currentUser.schedules.add(scheduleWithThatName);
-            return new CreateScheduleScreen(in,scheduleWithThatName,currentUser);
+            return new CreateScheduleScreen(in,scheduleWithThatName,currentUser,this.input);
         }
         else if(inputWord.equalsIgnoreCase("Calendar")){
             String scheduleName = in.next();
+            this.input += scheduleName;
             boolean found = false;
             for(Schedule s : currentUser.schedules){
                 if(s.getName().equals(scheduleName)){
@@ -29,13 +32,14 @@ public class MySchedulesScreen extends Screen {
                 }
             }
             if(found) {
-                return new MySchedulesScreen(in, currentUser);
+                return new MySchedulesScreen(in, currentUser,this.input);
             } else {
-                return new ExitScreen(in,this);
+                return new ExitScreen(in,this,this.input);
             }
         }
         else if(inputWord.equalsIgnoreCase("Delete")){
             String scheduleName = in.next();
+            this.input += scheduleName;
             boolean removed = false;
             Schedule toRemove = new Schedule("");
             for(Schedule s : currentUser.schedules){
@@ -50,13 +54,14 @@ public class MySchedulesScreen extends Screen {
             } else {
                 System.out.println("No schedule by that name.");
             }
-            return new MySchedulesScreen(in,currentUser);
+            return new MySchedulesScreen(in,currentUser,this.input);
         }
         else if(inputWord.equalsIgnoreCase("Home")){
-            return new HomeScreen(in,currentUser);
+            return new HomeScreen(in,currentUser,this.input);
         }
         else if(inputWord.equalsIgnoreCase("Edit")){
             String scheduleName = in.next();
+            this.input += scheduleName;
             Schedule toEdit = new Schedule("");
             boolean found = false;
             for(Schedule s : currentUser.schedules){
@@ -68,12 +73,12 @@ public class MySchedulesScreen extends Screen {
             }
             if(!found) {
                 System.out.println("No schedule by that name.");
-                return new ExitScreen(in,this);
+                return new ExitScreen(in,this,this.input);
             }
-            return new CreateScheduleScreen(in,toEdit,currentUser);
+            return new CreateScheduleScreen(in,toEdit,currentUser,this.input);
         }
         else {
-            return new ExitScreen(in,this);
+            return new ExitScreen(in,this,this.input);
         }
     }
 

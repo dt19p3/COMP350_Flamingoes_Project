@@ -6,8 +6,8 @@ import java.util.Scanner;
 public class CreateScheduleScreen extends Screen {
     public Schedule currentSchedule;
     public SessionUser currentUser;
-    public CreateScheduleScreen(Scanner scnr,Schedule s,SessionUser currentUser) {
-        super("Create New Schedule", new String[] {"Complete","Add","Home","Remove", "Activity"}, scnr);
+    public CreateScheduleScreen(Scanner scnr,Schedule s,SessionUser currentUser, String input) {
+        super("Create New Schedule", new String[] {"Complete","Add","Home","Remove", "Activity"}, scnr, input);
         this.currentSchedule = s;
         this.currentUser = currentUser;
     }
@@ -15,29 +15,33 @@ public class CreateScheduleScreen extends Screen {
     @Override
     public Screen input() {
         String inputWord = in.next();
+        this.input = inputWord;
         if(inputWord.equalsIgnoreCase("Complete")){
             Store.addSchedule(currentUser.profile.username, currentSchedule.name, currentSchedule);
-            return new MySchedulesScreen(in,currentUser);
+            SimilarityMap sm = new SimilarityMap("simmap.txt");
+            sm.processShedule(currentSchedule);
+            sm.flush();
+            return new MySchedulesScreen(in,currentUser,this.input);
         }
         else if(inputWord.equalsIgnoreCase("Add")) {
-            return new AddCourseScreen(in, currentSchedule, new ArrayList<ScheduleItem>(), currentUser);
+            return new AddCourseScreen(in, currentSchedule, new ArrayList<ScheduleItem>(), currentUser,this.input);
         }
         else if(inputWord.equalsIgnoreCase("Activity")) {
-            return new AddActivityScreen(in, currentSchedule, currentUser);
+            return new AddActivityScreen(in, currentSchedule, currentUser,this.input);
         }
         else if(inputWord.equalsIgnoreCase("Remove")){
             int index = in.nextInt();
             if(index <= this.currentSchedule.cours.size() && index >= 0) {
                 this.currentSchedule.cours.remove(this.currentSchedule.cours.get(index-1));
-                return new CreateScheduleScreen(in,currentSchedule,currentUser);
+                return new CreateScheduleScreen(in,currentSchedule,currentUser,this.input);
             }
-            return new ExitScreen(in,this);
+            return new ExitScreen(in,this,this.input);
 
         }
         else if(inputWord.equalsIgnoreCase("home")){
-                return new HomeScreen(in,currentUser);
+                return new HomeScreen(in,currentUser,this.input);
         } else {
-            return new ExitScreen(in,this);
+            return new ExitScreen(in,this,this.input);
         }
     }
 

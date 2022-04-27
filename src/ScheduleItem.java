@@ -31,6 +31,10 @@ public class ScheduleItem {
         this.conflictingScheduleItem = null;
     }
 
+    public ScheduleItem(String code){ //Constructor for testing!
+        this.code = code;
+    }
+
    // this is a constructor that includes the fields in our class diagram, expected to use this when reading
     // schedule courses saved to file back into memory
    public ScheduleItem(String code, String shortTitle, String longTitle, LocalTime beginTime, LocalTime endTime,

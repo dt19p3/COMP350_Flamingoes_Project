@@ -39,6 +39,5 @@ public class SessionUser {
             s.register(username, password);
             this.profile = new Profile(s.username, s.password);
         }
-
     }
 }

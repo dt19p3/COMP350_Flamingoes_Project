@@ -34,9 +34,11 @@ public class SessionUser {
 
     public void register(String username, String password) throws Exception {
         Store s = new Store(username, password);
-        s.register(username, password);
-        this.profile = new Profile(s.username, s.password);
-
+        accountExists = s.checkForUser(s.username);
+        if(!accountExists) {
+            s.register(username, password);
+            this.profile = new Profile(s.username, s.password);
+        }
 
     }
 }

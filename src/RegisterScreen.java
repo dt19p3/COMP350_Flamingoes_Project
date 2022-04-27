@@ -16,8 +16,14 @@ public class RegisterScreen extends Screen {
         this.input = inputWord + "_____ _____";
         if(inputWord.equalsIgnoreCase("Sign-up")) {
             SessionUser currentUser = new SessionUser(false);
-            currentUser.register(in.next(),in.next());
-            return new HomeScreen(in,currentUser,this.input);
+            currentUser.register(in.next(), in.next());
+            if(!currentUser.accountExists) {
+                return new HomeScreen(in, currentUser, this.input);
+            }
+            else{
+                System.out.println("Username already exists");
+                return new RegisterScreen(in, this.input);
+            }
         }
         else {
             return new ExitScreen(in,this,this.input);

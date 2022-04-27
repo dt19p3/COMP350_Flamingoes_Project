@@ -1,1 +1,22 @@
 FLAMINGOES SCHEDULER LOG
+
+Beginning session @ 1651023041428: 
+continue_____ _____
+create schedule
+create schedule
+create schedule s1
+add
+search
+add 1
+add
+search
+exit
+
+Beginning session @ 1651071586521: 
+login_____ _____
+my schedules
+duplicates2 (copy)
+deletes2
+exit
+exit
+exit

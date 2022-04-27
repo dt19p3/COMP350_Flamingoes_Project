@@ -61,6 +61,30 @@ public class MySchedulesScreen extends Screen {
             }
             return new MySchedulesScreen(in,currentUser,this.input);
         }
+        else if(inputWord.equalsIgnoreCase("Duplicate")){
+            String origScheduleName = in.next();
+            String dupScheduleName = origScheduleName + "(copy)";
+            this.input += dupScheduleName;
+            Schedule duplicateSchedule = new Schedule("");
+            boolean copied = false;
+            for (int i = 0; i < currentUser.schedules.size(); i++){
+                if (currentUser.schedules.get(i).name.equalsIgnoreCase(origScheduleName)){
+                    copied = true;
+                    duplicateSchedule.setName(dupScheduleName);
+                    for (int j = 0; j < currentUser.schedules.get(i).getCourses().size(); j++){
+                        duplicateSchedule.addCourse(currentUser.schedules.get(i).cours.get(j));
+                    }
+                    currentUser.schedules.add(duplicateSchedule);
+                    Store.addSchedule(currentUser.profile.username,duplicateSchedule.name,duplicateSchedule);
+                    break;
+                }
+            }
+            if(copied) {
+                return new MySchedulesScreen(in, currentUser,this.input);
+            } else {
+                return new ExitScreen(in,this,this.input);
+            }
+        }
         else if(inputWord.equalsIgnoreCase("Home")){
             return new HomeScreen(in,currentUser,this.input);
         }
@@ -100,6 +124,7 @@ public class MySchedulesScreen extends Screen {
                         "\t\t\t\t\t| Enter one of the following:                                          |\n" +
                         "\t\t\t\t\t|              - Add <name>                                            |\n" +
                         "\t\t\t\t\t|              - Edit <name>                                           |\n" +
+                        "\t\t\t\t\t|              - Duplicate <name>                                      |\n" +
                         "\t\t\t\t\t|              - Delete <name>                                         |\n" +
                         "\t\t\t\t\t|              - Calendar <name>                                       |\n" +
                         "\t\t\t\t\t|              - Home                                                  |\n" +

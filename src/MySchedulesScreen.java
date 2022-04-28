@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.util.Scanner;
 /**
  * The view-my-schedule screen.
@@ -5,12 +6,12 @@ import java.util.Scanner;
 public class MySchedulesScreen extends Screen {
     public SessionUser currentUser;
     public MySchedulesScreen(Scanner scnr,SessionUser s, String input) {
-        super("My Schedules", new String[] {"Add", "Delete","Edit","Home","Calendar"}, scnr, input);
+        super("My Schedules", new String[] {"Add", "Delete","Edit","Home","Calendar","Export"}, scnr, input);
         this.currentUser = s;
     }
 
     @Override
-    public Screen input() {
+    public Screen input() throws IOException {
         String inputWord = in.next();
         this.input = inputWord;
         if(inputWord.equalsIgnoreCase("Add")){
@@ -27,6 +28,24 @@ public class MySchedulesScreen extends Screen {
             for(Schedule s : currentUser.schedules){
                 if(s.getName().equals(scheduleName)){
                     ViewCalendarScheduleScreen.printCalendar(s.getCourses());
+                    found = true;
+                    break;
+                }
+            }
+            if(found) {
+                return new MySchedulesScreen(in, currentUser,this.input);
+            } else {
+                return new ExitScreen(in,this,this.input);
+            }
+        }
+        else if (inputWord.equalsIgnoreCase("Export")) {
+            String scheduleName = in.next();
+            this.input += scheduleName;
+            boolean found = false;
+            for(Schedule s : currentUser.schedules){
+                if(s.getName().equals(scheduleName)){
+                    // ViewCalendarScheduleScreen.printCalendar(s.getCourses());
+                    ExportScheduleScreen.PrintToFile(s);
                     found = true;
                     break;
                 }
@@ -125,6 +144,7 @@ public class MySchedulesScreen extends Screen {
                         "\t\t\t\t\t|              - Duplicate <name>                                      |\n" +
                         "\t\t\t\t\t|              - Delete <name>                                         |\n" +
                         "\t\t\t\t\t|              - Calendar <name>                                       |\n" +
+                        "\t\t\t\t\t|              - Export <name>                                         |\n" +
                         "\t\t\t\t\t|              - Home                                                  |\n" +
                         "\t\t\t\t\t|______________________________________________________________________|\n"));
         if(currentUser.schedules == null){

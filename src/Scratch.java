@@ -19,11 +19,11 @@ public class Scratch {
 
 
         Schedule s = new Schedule();
-        s.addCourse(new ScheduleItem("CHEM 112"));
-        s.addCourse(new ScheduleItem("CHEM 114"));
-        s.addCourse(new ScheduleItem("BIOL 102"));
-        s.addCourse(new ScheduleItem("MATH 162"));
-        s.addCourse(new ScheduleItem("HUMA 102"));
+        s.addCourse(new ScheduleItem("COMP 222  A"));
+        s.addCourse(new ScheduleItem("COMP 244  A"));
+        s.addCourse(new ScheduleItem("SOCI 101  A"));
+        s.addCourse(new ScheduleItem("MATH 118  A"));
+        s.addCourse(new ScheduleItem("HUMA 200  B"));
         sm.processShedule(s);
 //
 //        Schedule s2 = new Schedule();

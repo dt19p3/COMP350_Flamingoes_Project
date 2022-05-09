@@ -81,3 +81,63 @@ View
 Home
 My schedules
 Exit
+
+Beginning session @ 1651103324705: 
+Login_____ _____
+My profile
+Home
+My schedules
+Adds1
+Home
+My schedules
+Adds2
+Home
+My schedules
+Home
+Logout
+Exit
+
+Beginning session @ 1651103433453: 
+Login_____ _____
+My schedules
+Home
+My profile
+Home
+Create schedule
+Create schedule
+Create schedule s1
+Add
+Search
+Add 1
+Add
+See suggestions
+View
+Complete
+Duplicates1(copy)
+Calendars1
+Edits1
+Add
+View
+
+Add
+Complete
+Calendars1
+Edits1
+Add
+View
+
+Add
+Complete
+Home
+Logout
+Loging ELI_LOWRY
+Loging ELI_LOWRY
+Login_____ _____
+My schedules
+Exit
+
+Beginning session @ 1651104227073: 
+Login_____ _____
+My schedules
+Home
+Exit
